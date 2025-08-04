@@ -10,32 +10,80 @@ const { experience } = Astro.props;
 ---
 
 <Section text="Work Experience" href="experience">
-  {
-    experience.map(({ company, position, startDate, endDate, summary }) => (
-      <div class="mb-10">
-        <h3 class="mb-1.5 font-serif text-2xl font-semibold text-white">
-          {company}
-        </h3>
-        <div class="flex flex-col items-start pb-5">
-          <h4 class="mb-0.5 font-serif text-2xl font-medium text-primary">
-            {position}
-          </h4>
-          <span class="pb-[2px] text-sm text-white/70">
-            {startDate} — {endDate}
-          </span>
+  <div class="space-y-6 sm:space-y-8">
+    {experience.map(({ company, position, startDate, endDate, summary }, index) => {
+      const isCurrent = endDate === "Present";
+      return (
+        <div class="group">
+          <div class={`
+            relative p-4 sm:p-6 rounded-xl transition-all duration-200 ease-out
+            ${isCurrent 
+              ? 'bg-white/8 border border-primary/20' 
+              : 'bg-white/3 border border-white/5 hover:bg-white/5'
+            }
+          `}>
+            {/* Header Section */}
+            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg sm:text-xl font-semibold text-white mb-1 sm:mb-2 leading-tight sm:leading-snug break-words">
+                  {company}
+                </h3>
+                <h4 class="text-base sm:text-lg font-medium mb-2 leading-tight text-primary">
+                  {position}
+                </h4>
+              </div>
+              {/* Timeline Badge */}
+              <div class={`
+                flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium shrink-0
+                ${isCurrent 
+                  ? 'bg-primary/10 text-primary border border-primary/20' 
+                  : 'bg-white/5 text-white/60 border border-white/10'
+                }
+              `}>
+                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span class="whitespace-nowrap">{startDate} — {endDate}</span>
+                {isCurrent && (
+                  <span class="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full whitespace-nowrap">
+                    Current
+                  </span>
+                )}
+              </div>
+            </div>
+            {/* Summary/Description */}
+            <div class="space-y-2 sm:space-y-3">
+              {Array.isArray(summary) ? (
+                <ul class="space-y-2 sm:space-y-3">
+                  {summary.map((item, itemIndex) => (
+                    <li class="flex items-start gap-2 sm:gap-3 text-white/80 leading-relaxed">
+                      <div class={`
+                        w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full mt-1.5 sm:mt-2 shrink-0
+                        ${isCurrent ? 'bg-primary' : 'bg-white/40'}
+                      `}></div>
+                      <span class="text-xs sm:text-sm">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="text-white/80 leading-relaxed text-xs sm:text-sm pr-4 sm:pr-8">{summary}</p>
+              )}
+            </div>
+            {/* Subtle Current Indicator */}
+            {isCurrent && (
+              <div class="absolute top-3 sm:top-4 right-3 sm:right-4">
+                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full opacity-60"></div>
+              </div>
+            )}
+          </div>
+          {/* Subtle Separator */}
+          {index < experience.length - 1 && (
+            <div class="flex justify-center mt-6 sm:mt-8">
+              <div class="w-8 sm:w-12 h-px bg-white/10"></div>
+            </div>
+          )}
         </div>
-        {Array.isArray(summary) ? (
-          <ul class="list-none">
-            {summary.map((log) => (
-              <li class="relative mb-3 pl-8 text-base text-neutral before:absolute before:top-1 before:left-0 before:content-[url(/check.svg)]">
-                {log}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p class="text-base text-neutral">{summary}</p>
-        )}
-      </div>
-    ))
-  }
+      );
+    })}
+  </div>
 </Section>

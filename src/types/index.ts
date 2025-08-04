@@ -10,9 +10,11 @@ export interface SiteConfig extends HeaderProps {
 
 export interface SiteContent {
   hero: HeroProps;
+  about: AboutProps;
+  education: EducationProps[];
   experience: ExperienceProps[];
   projects: ProjectProps[];
-  about: AboutProps;
+  contact: ContactProps;
 }
 
 export interface HeroProps {
@@ -34,6 +36,9 @@ export interface ProjectProps {
   name: string;
   summary: string;
   image: string;
+  date?: string;
+  techStack?: string[];
+  tags?: string[];
   linkPreview?: string;
   linkSource?: string;
 }
@@ -47,3 +52,23 @@ export interface HeaderProps {
   siteLogo: string;
   navLinks: { text: string; href: string }[];
 }
+
+export interface EducationProps {
+  institution: string;
+  degree: string;
+  startDate: string;
+  endDate: string;
+  grade?: string;
+  image?: string;
+}
+
+export interface ContactProps {
+  email: string;
+  phone?: string;
+  socials?: {
+    linkedin?: string;
+    github?: string;
+    instagram?: string;
+  };
+}
+

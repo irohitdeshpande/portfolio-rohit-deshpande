@@ -1,27 +1,78 @@
 ---
-import type { HeroProps } from "@types";
-type Props = HeroProps;
+import type { HeroProps, ContactProps } from "@types";
+type Props = HeroProps & { contact: ContactProps };
 
-const { name, specialty, summary, email } = Astro.props;
+const { name, specialty, summary, contact } = Astro.props;
 ---
 
-<section class="py-24 md:py-32" id="#hero">
-  <h1
-    class="mb-1.5 font-serif text-7xl font-bold tracking-tightest text-white sm:text-8xl md:mb-0 md:text-9xl"
-  >
-    {name}
+<section class="py-8 md:py-14 flex flex-col gap-6 items-center" id="hero">
+  <h1 class="mb-1 font-serif text-6xl font-bold tracking-tightest sm:text-8xl md:text-9xl flex flex-wrap items-center">
+    <span id="typed-intro" class="text-primary"></span>
+    <span id="typed-name" class="text-white ml-2"></span>
   </h1>
-  <p
-    class="mb-9 font-serif text-4xl leading-[46px] font-bold tracking-tighter text-primary sm:text-5xl md:text-6xl"
-  >
+  <p class="mb-7 font-serif text-lg leading-[32px] font-semibold tracking-tighter text-primary sm:text-2xl md:text-3xl text-center">
     {specialty}
   </p>
-  <p class="mb-16 text-base font-normal text-neutral md:text-lg">
+  <p class="mb-7 text-base font-normal text-neutral md:text-lg text-center">
     {summary}
   </p>
-
   <a
-    class="inline-block rounded-full bg-primary px-8 py-5 text-sm leading-5 font-medium text-[#fff]"
-    href={`mailto:${email}`}>Get in Touch</a
-  >
+    class="inline-block rounded-full bg-primary px-8 py-4 text-sm leading-5 font-medium text-[#fff] cursor-pointer"
+    href="#contact"
+  >Get in Touch</a>
 </section>
+
+<script>
+  const introText = "नमस्कार! मी ";
+  const nameTextMarathi = "रोहित देशपांडे";
+  const nameTextEnglish = "ROHIT DESHPANDE";
+  
+  let introIdx = 0;
+  let nameIdx = 0;
+  let isMarathi = true;
+  const introElem = document.getElementById("typed-intro");
+  const nameElem = document.getElementById("typed-name");
+
+  function typeText() {
+    if (introIdx < introText.length) {
+      if (introElem) introElem.textContent += introText[introIdx++];
+      setTimeout(typeText, 70);
+    } else if (isMarathi && nameIdx < nameTextMarathi.length) {
+      if (nameElem) nameElem.textContent += nameTextMarathi[nameIdx++];
+      setTimeout(typeText, 70);
+    } else if (isMarathi) {
+      setTimeout(eraseName, 700);
+    } else if (!isMarathi && nameIdx < nameTextEnglish.length) {
+      if (nameElem) nameElem.textContent += nameTextEnglish[nameIdx++];
+      setTimeout(typeText, 70);
+    } else {
+      setTimeout(resetAnimation, 700);
+    }
+  }
+
+  function eraseName() {
+    if (nameElem && (nameElem.textContent ?? "").length > 0) {
+      nameElem.textContent = (nameElem.textContent ?? "").slice(0, -1);
+      setTimeout(eraseName, 40);
+    } else {
+      nameIdx = 0;
+      isMarathi = false;
+      if (nameElem) nameElem.textContent = "";
+      setTimeout(typeText, 200);
+    }
+  }
+
+  function resetAnimation() {
+    if (nameElem) nameElem.textContent = "";
+    introIdx = 0;
+    nameIdx = 0;
+    isMarathi = true;
+    if (introElem) introElem.textContent = "";
+    setTimeout(typeText, 200);
+  }
+
+  // Start the animation
+  if (introElem && nameElem) {
+    typeText();
+  }
+</script>

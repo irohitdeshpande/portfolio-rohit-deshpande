@@ -9,47 +9,51 @@ const { siteLogo, navLinks } = Astro.props;
 ---
 
 <header
-  class="sticky top-0 z-50 mx-auto flex max-w-5xl animate-slide-in justify-between bg-black px-5 py-6"
+  class="sticky top-0 z-50 mx-auto flex max-w-5xl animate-slide-in items-center bg-black px-3 py-3 sm:px-5 sm:py-4"
 >
-  <a href="/" aria-label="Home link">
-    <Image
-      class="rounded-full"
-      src={siteLogo}
-      width="45"
-      height="45"
-      alt="website logo"
-    />
-  </a>
+  <div class="flex items-center flex-1">
+    <a href="/" aria-label="Home link" class="flex items-center">
+      <Image
+        class="rounded-full"
+        src={siteLogo}
+        width="36"
+        height="36"
+        alt="website logo"
+      />
+    </a>
+  </div>
 
-  <button
-    type="button"
-    id="menu-button"
-    class="px-1.5 text-neutral sm:hidden"
-    aria-expanded="false"
-    aria-controls="main-menu"
-  >
-    <Menu />
-  </button>
+  <div class="flex items-center gap-2">
+    <button
+      type="button"
+      id="menu-button"
+      class="px-2 py-1 text-neutral rounded-lg focus:outline-none focus:ring-2 focus:ring-primary sm:hidden"
+      aria-expanded="false"
+      aria-controls="main-menu"
+    >
+      <Menu />
+    </button>
 
-  <nav
-    class="absolute top-20 right-5 hidden rounded-xl border border-neutral/40 bg-black px-4 py-5 text-neutral sm:static sm:block sm:border-0 sm:bg-transparent sm:p-0"
-    id="main-menu"
-  >
-    <ul class="gap-2 sm:flex">
-      {
-        navLinks.map((link) => (
-          <li class="relative">
-            <a
-              class={`nav-item relative block p-2 text-sm font-medium transition-all duration-500 after:absolute after:bottom-0 after:left-2/4 after:h-2 after:w-1 after:-translate-x-2/4 after:text-primary after:opacity-0 after:content-['•'] hover:text-white`}
-              href={link.href}
-            >
-              {link.text}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
+    <nav
+      class="absolute top-14 right-3 w-40 hidden rounded-xl border border-neutral/40 bg-black px-3 py-3 text-neutral sm:static sm:block sm:border-0 sm:bg-transparent sm:p-0"
+      id="main-menu"
+    >
+      <ul class="flex flex-col gap-2 sm:flex-row sm:gap-2">
+        {
+          navLinks.map((link) => (
+            <li class="relative">
+              <a
+                class={`nav-item relative block px-2 py-1 text-sm font-medium transition-all duration-500 after:absolute after:bottom-0 after:left-2/4 after:h-2 after:w-1 after:-translate-x-2/4 after:text-primary after:opacity-0 after:content-['•'] hover:text-white`}
+                href={link.href}
+              >
+                {link.text}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
 </header>
 
 <script>
@@ -107,5 +111,22 @@ const { siteLogo, navLinks } = Astro.props;
   header {
     animation-timeline: scroll();
     animation-range: 0 650px;
+  }
+  @media (max-width: 640px) {
+    header {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    .nav-item {
+      padding: 0.5rem 0.75rem;
+    }
+    #main-menu {
+      top: 3.5rem;
+      right: 0.75rem;
+      width: 10rem;
+      padding: 0.75rem;
+    }
   }
 </style>

@@ -1,0 +1,146 @@
+---
+import Section from "./Section.astro";
+// Hardcoded contact info
+const email = "rohitsdeshpande4work@gmail.com";
+const phone = "https://wa.link/9qyt2t";
+const linkedin = "https://linkedin.com/in/irohitdeshpande";
+const github = "https://github.com/irohitdeshpande";
+---
+
+<Section text="Contact" href="contact">
+  <div class="flex flex-col gap-8">
+    <!-- Contact Info Card -->
+    <div class="relative p-6 rounded-xl transition-all duration-200 ease-out bg-white/3 border border-white/5 hover:bg-white/5">
+      <h3 class="text-2xl font-semibold mb-6 text-primary font-serif">You can reach me on</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Email -->
+        <a href={`mailto:${email}`} class="group flex flex-col items-center p-4 rounded-lg transition-all duration-200 hover:bg-white/5 hover:scale-105">
+          <div class="w-12 h-12 bg-primary/15 rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/25 transition-colors">
+            <img src="/email-icon.svg" alt="Email Icon" class="w-8 h-8 text-primary" />
+          </div>
+          <h4 class="text-sm font-medium text-neutral group-hover:text-primary/80">Email</h4>
+        </a>
+
+        <!-- Phone -->
+        <a href={phone} target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center p-4 rounded-lg transition-all duration-200 hover:bg-white/5 hover:scale-105">
+          <div class="w-12 h-12 bg-primary/15 rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/25 transition-colors">
+            <img src="/whatsapp-icon.svg" alt="WhatsApp Icon" class="w-8 h-8 text-primary" />
+          </div>
+          <h4 class="text-sm font-medium text-neutral group-hover:text-primary/80">WhatsApp</h4>
+        </a>
+
+        <!-- LinkedIn -->
+        <a href={linkedin} target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center p-4 rounded-lg transition-all duration-200 hover:bg-white/5 hover:scale-105">
+          <div class="w-12 h-12 bg-primary/15 rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/25 transition-colors">
+            <img src="/linkedin-icon.svg" alt="LinkedIn Icon" class="w-8 h-8 text-primary" />
+          </div>
+          <h4 class="text-sm font-medium text-neutral group-hover:text-primary/80">LinkedIn</h4>
+        </a>
+
+        <!-- GitHub -->
+        <a href={github} target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center p-4 rounded-lg transition-all duration-200 hover:bg-white/5 hover:scale-105">
+          <div class="w-12 h-12 bg-primary/15 rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/25 transition-colors">
+            <img src="/github-icon.svg" alt="GitHub Icon" class="w-8 h-8 text-primary" />
+          </div>
+          <h4 class="text-sm font-medium text-neutral group-hover:text-primary/80">GitHub</h4>
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="relative p-6 rounded-xl transition-all duration-200 ease-out bg-white/3 border border-white/5 hover:bg-white/5">
+      <h3 class="text-2xl font-semibold mb-6 font-serif text-primary">Send Me a Message</h3>
+      <form id="contact-form" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label for="name" class="block text-white/70 mb-2 text-sm font-medium">Your Name</label>
+            <input type="text" id="name" name="name" class="w-full px-4 py-3 rounded-lg border border-white/10 bg-white/5 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-white placeholder-white/40 transition-colors" placeholder="Enter your name" required />
+          </div>
+          <div>
+            <label for="email" class="block text-white/70 mb-2 text-sm font-medium">Your Email</label>
+            <input type="email" id="email" name="email" class="w-full px-4 py-3 rounded-lg border border-white/10 bg-white/5 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-white placeholder-white/40 transition-colors" placeholder="Enter your email" required />
+          </div>
+        </div>
+        <div>
+          <label for="subject" class="block text-white/70 mb-2 text-sm font-medium">Subject</label>
+          <input type="text" id="subject" name="subject" class="w-full px-4 py-3 rounded-lg border border-white/10 bg-white/5 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-white placeholder-white/40 transition-colors" placeholder="What's this about?" required />
+        </div>
+        <div>
+          <label for="message" class="block text-white/70 mb-2 text-sm font-medium">Your Message</label>
+          <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 rounded-lg border border-white/10 bg-white/5 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-white placeholder-white/40 resize-none transition-colors" placeholder="Tell me about your project or idea..." required></textarea>
+        </div>
+        <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 flex items-center justify-center group">
+          <span>Send Message</span>
+          <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+          </svg>
+        </button>
+      </form>
+      <div id="contact-toast" class="mt-4 text-center text-primary font-semibold opacity-0 transition-opacity duration-200"></div>
+    </div>
+  </div>
+</Section>
+
+<script>
+  import emailjs from 'emailjs-com';
+  
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const toast = document.getElementById('contact-toast') as HTMLElement;
+  
+  if (form && toast) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Show loading state
+      const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const originalText = submitButton.innerHTML;
+      submitButton.innerHTML = `
+        <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Sending...
+      `;
+      submitButton.disabled = true;
+      
+      toast.textContent = 'Sending your message...';
+      toast.style.opacity = '1';
+      
+      try {
+        const formData = new FormData(form);
+        const result = await emailjs.send(
+          import.meta.env.PUBLIC_EMAILJS_SERVICE_ID || 'service_idnjelu',
+          import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID || 'template_z6dosgs',
+          {
+            from_name: formData.get('name'),
+            from_email: formData.get('email'),
+            subject: formData.get('subject'),
+            message: formData.get('message'),
+          },
+          '3uxXkNidPunCtPyph' // Your EmailJS user ID
+        );
+        
+        toast.textContent = 'Message sent successfully! Thank you for reaching out.';
+        toast.className = 'mt-4 text-center text-green-400 font-semibold opacity-100 transition-opacity duration-200';
+        form.reset();
+        
+      } catch (error) {
+        console.error('Email sending failed:', error);
+        toast.textContent = 'Failed to send message. Please try again or contact me directly.';
+        toast.className = 'mt-4 text-center text-red-400 font-semibold opacity-100 transition-opacity duration-200';
+      } finally {
+        // Reset button
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+        
+        // Hide toast after 5 seconds
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => {
+            toast.className = 'mt-4 text-center text-primary font-semibold opacity-0 transition-opacity duration-200';
+          }, 200);
+        }, 5000);
+      }
+    });
+  }
+</script>
