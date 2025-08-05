@@ -6,7 +6,7 @@ export const SITE_CONFIG: SiteConfig = {
   description:
     "Computer Engineering Student | Software & Data Science Focused | Driven by Passion for AI & ML",
   lang: "en",
-  siteLogo: "/alejandro-small.jpg",
+  siteLogo: "/rohit-logo.jpg",
   navLinks: [
     { text: "About", href: "#about" },
     { text: "Education", href: "#education" },
@@ -19,7 +19,7 @@ export const SITE_CONFIG: SiteConfig = {
     { text: "LinkedIn", href: "https://www.linkedin.com/in/irohitdeshpande/" },
     { text: "Instagram", href: "https://www.instagram.com/irohitdeshpande/" },
   ],
-  socialImage: "/zen-og.png",
+  socialImage: "/rohit-logo.png",
   canonicalURL: "https://portfolio-rohit-deshpande.vercel.app",
 };
 
@@ -27,16 +27,17 @@ export const SITE_CONTENT: SiteContent = {
   hero: {
     name: "ROHIT DESHPANDE",
     specialty: "Software Engineer | Data Science Enthusiast",
-    summary: "Computer Engineering Student with a drive for Analysis, Coding, Data and Impactful Problem Solving.",
+    summary:
+      "Computer Engineering Student with a drive for Analysis, Coding, Data and Impactful Problem Solving.",
     email: "rohitsdeshpande4work@gmail.com",
+    resume:
+      "https://somaiya0-my.sharepoint.com/:b:/g/personal/rohit_sd_somaiya_edu/EcTycmheCOFDoUBHYXe8Et8BxUMp62ub4MhYDLCBxnxy8Q?e=s8o056",
+    heroImage: "/rohitdeshpande.jpg",
   },
   about: {
-    description: `
-      Hi, I’m Alejandro Múnez, a passionate Mobile and Web Developer with a knack for crafting seamless digital experiences. With a strong background in both Android and iOS development, as well as front-end web technologies, I thrive in the intersection where creativity meets technology.
-
-      Over the years, I’ve honed my skills in building robust, user-friendly applications that not only meet the needs of users but also push the boundaries of what’s possible. My projects range from innovative mobile applications to responsive web designs, all with a focus on performance, security, and scalability.
+    description: `I'm a Computer Engineering student at K.J. Somaiya College of Engineering, driven by a passion for software development and data science. My journey has been marked by a commitment to learning and innovation, with a focus on AI and machine learning. I thrive on challenges that require analytical thinking and creative problem-solving, and I'm always eager to explore new technologies and methodologies to enhance my skills and contribute to impactful projects. Whether it's through internships, academic projects, or personal endeavors, I strive to make a meaningful impact in the tech world.
     `,
-    image: "/alejandro-big.jpg",
+    image: "/rohitdeshpande.jpg",
   },
   education: [
     {
@@ -49,7 +50,7 @@ export const SITE_CONTENT: SiteContent = {
     },
     {
       institution: "Smt. Sulochanadevi Singhania School, Thane",
-      degree: "Class 12 (Higher Secondary)",
+      degree: "Class 12 (CISCE Board)",
       grade: "95.40%",
       startDate: "2020",
       endDate: "2022",
@@ -57,7 +58,7 @@ export const SITE_CONTENT: SiteContent = {
     },
     {
       institution: "Hiranandani Foundation School, Thane",
-      degree: "Class 10 (Secondary)",
+      degree: "Class 10 (CISCE Board)",
       grade: "95.80%",
       startDate: "2010",
       endDate: "2020",
@@ -69,87 +70,107 @@ export const SITE_CONTENT: SiteContent = {
       company: "Arcon TechSolutions",
       position: "Software Engineer Intern",
       startDate: "Jun 2025",
-      endDate: "July 2025",
-      summary: "Developed a complete database project with CRUD APIs as part of a self-driven learning initiative, enhancing skills in SQL, backend development, and API integration. Improved the PAM Alert Service by optimizing performance, refining relational mappings, and implementing logging for 23% better traceability. Created documentation, flowcharts, and tested 1000+ API endpoints using Postman. Initiated migration of the alert service to a new .NET 8 Worker Service framework."
+      endDate: "Jul 2025",
+      summary:
+        "During my internship at ARCON, I gained hands-on experience in understanding and improving large-scale backend systems. I took the initiative to build a complete database project with CRUD APIs, which deepened my expertise in SQL, backend logic, and real-world API integration. Alongside this, I worked on modernizing existing workflows by optimizing performance, refining relational mappings, and implementing structured logging to enhance system traceability. I also began the migration of key components to a .NET 8 Worker Service framework, gaining exposure to scalable and maintainable architectures. Throughout the internship, I created detailed documentation, designed workflow diagrams, and tested over 1000 API endpoints using Postman—sharpening my ability to design, debug, and document robust backend systems.",
+      image: "/arcon-logo.jpg",
     },
     {
-      company: "Computer Society of India (CSI) - KJSCE",
+      company: "CSI - KJSCE",
       position: "Operations Team Member",
-      startDate: "July 2023",
+      startDate: "Jul 2023",
       endDate: "May 2024",
-      summary: "Contributed to the planning and execution of major technical events at CSI KJSCE, including Road to Programming (400+ participants), KJSCE Ideathon, Tech Olympics, and Devopia—one of Mumbai’s largest hackathons. Designed competition questions, managed online rounds, tracked scores, and handled backend logistics. Supported social media outreach by analyzing engagement patterns and implementing content strategies, resulting in 500+ daily viewers during peak events."
-    }
+      summary:
+        "As a core member of the Operations Team at CSI KJSCE, I played a key role in planning and executing major technical events such as Road to Programming (400+ participants), KJSCE Ideathon, Tech Olympics, and Devopia—one of Mumbai's largest hackathons. I led the organizing efforts for Tech Olympics, ensuring smooth coordination across multiple events, making it one of the most efficiently run editions. My responsibilities included designing competition questions, managing online rounds, tracking participant scores, and handling backend logistics. I also contributed to social media strategy by analyzing engagement patterns and implementing content ideas, which helped drive over 500 daily viewers during peak activity. This experience sharpened my leadership, coordination, and event execution skills in a fast-paced, high-stakes environment.",
+      image: "/csi-logo.jpg",
+    },
   ],
   projects: [
     {
       name: "Portfolio Website",
-      summary: "A personal portfolio website showcasing my projects and skills.",
+      summary:
+        "A personal portfolio built with Astro and TailwindCSS to showcase my skills, projects, and experience. Designed with performance, accessibility, and responsiveness in mind.",
       date: "Aug 2025",
       techStack: ["Astro", "TypeScript", "TailwindCSS"],
-      tags: ["portfolio", "web", "frontend"],
-      linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/portfolio.png",
+      tags: [
+      ],
+      linkPreview: "https://portfolio-rohit-deshpande.vercel.app/",
+      linkSource: "https://github.com/irohitdeshpande/portfolio-rohit-deshpande",
+      image: "/portfolio-website.png",
     },
     {
-      name: "AI Powered Mock Interview Platform",
-      summary: "A platform for conducting mock technical interviews.",
+      name: "IntervAI: Mock Interview Platform",
+      summary:
+        "A web-based platform that conducts technical mock interviews using Google’s Gemini API. Supports real-time voice input, AI-generated questions, and performance feedback for job seekers.",
       date: "May 2025",
-      techStack: ["Vite", "React", "Firebase", "Gemini API"],
-      tags: ["AI", "interview", "platform"],
-      linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/mock-interview.png",
+      techStack: ["Vite", "TypeScript", "Firebase", "Clerk", "Gemini API"],
+      tags: [
+      ],
+      linkPreview: "https://interv-ai.vercel.app/",
+      linkSource: "https://github.com/irohitdeshpande/ai-mock-interviewer",
+      image: "/mock-interviewer.png",
     },
     {
-      name: "Customer Churn Prediction",
-      summary: "A machine learning model to predict customer churn.",
+      name: "Customer Churn Prediction (ML)",
+      summary:
+        "A machine learning model that predicts customer churn based on behavioral and transactional data. Utilizes Random Forest and logistic regression for classification, with insights visualized in Jupyter.",
       date: "May 2025",
-      techStack: ["Python", "scikit-learn", "Pandas"],
-      tags: ["machine-learning", "churn", "random-forest"],
+      techStack: ["Python", "Scikit-learn", "Pandas", "Matplotlib"],
+      tags: [
+        
+      ],
       linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/clone-ig.png",
+      linkSource: "https://github.com/irohitdeshpande/customer-churn-prediction",
+      image: "/customer-churn.png",
     },
     {
-      name: "Face Mask Detector and AI Health Assistant",
-      summary: "A machine learning model to detect face masks and provide health assistance.",
+      name: "Careshield: Face Mask Detector & AI Health Assistant",
+      summary:
+        "A real-time face mask detection system using OpenCV and MobileNetV2. Integrated with an AI chatbot (Gemini API) to provide health tips, creating a complete safety assistant solution.",
       date: "Apr 2025",
-      techStack: ["Python", "TensorFlow", "OpenCV", "Flask"],
-      tags: ["AI", "health", "computer-vision"],
+      techStack: ["Python", "TensorFlow", "OpenCV", "Flask", "Gemini API"],
+      tags: [
+        
+      ],
       linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/clone-ig.png",
+      linkSource: "https://github.com/irohitdeshpande/Face-Mask-Detector",
+      image: "/face-mask.png",
     },
     {
-      name: "Sentiment Analysis Classifier",
-      summary: "A machine learning model to classify sentiment from text data.",
+      name: "Tweets Sentiment Analysis Classifier",
+      summary:
+        "A text classification system that uses traditional NLP methods (TF-IDF, NLTK) and logistic regression to analyze sentiment from tweets. Built with a lightweight Streamlit frontend for user input and visualization.",
       date: "Feb 2025",
-      techStack: ["Python", "NLTK", "scikit-learn"],
-      tags: ["NLP", "sentiment", "machine-learning"],
-      linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/clone-ig.png",
+      techStack: ["Python", "NLTK", "Scikit-learn", "Streamlit"],
+      tags: [
+        
+      ],
+      linkPreview: "https://text-sentiment-01.streamlit.app/",
+      linkSource: "https://github.com/irohitdeshpande/sentiment-analysis-text",
+      image: "/sentiment-analysis.png",
     },
     {
-      name: "Quiz Platform with AI Based Question Generation",
-      summary: "A platform for creating and taking quizzes with AI-generated questions.",
+      name: "Quizify: AI-Driven Quiz Platform",
+      summary:
+        "A full-stack MERN application where evaluators can create, assign, and track quizzes. Supports AI-based question generation via Gemini API and features analytics dashboards for performance insights.",
       date: "Nov 2024",
-      techStack: ["React", "Node.js", "Gemini API"],
-      tags: ["quiz", "AI", "platform"],
+      techStack: ["React", "Node.js", "MongoDB", "Gemini API"],
+      tags: [
+       
+      ],
       linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/clone-ig.png",
-    }
+      linkSource: "https://github.com/irohitdeshpande/ai-quiz-mern",
+      image: "/quiz-app.png",
+    },
   ],
   contact: {
     email: "rohitsdeshpande4work@gmail.com",
     phone: "+918291692070",
     socials: {
       linkedin: "https://www.linkedin.com/in/irohitdeshpande/",
-      github: "https://github.com/irohitdeshpande"
-    }
-  }
+      github: "https://github.com/irohitdeshpande",
+    },
+  },
 };
 
 // #5755ff

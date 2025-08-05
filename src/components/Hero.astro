@@ -1,8 +1,10 @@
 ---
-import type { HeroProps, ContactProps } from "@types";
-type Props = HeroProps & { contact: ContactProps };
+import { SITE_CONTENT, SITE_CONFIG } from "../config/index";
 
-const { name, specialty, summary, contact } = Astro.props;
+const { name, specialty, summary, email } = SITE_CONTENT.hero;
+const githubUrl = SITE_CONTENT.contact?.socials?.github || SITE_CONFIG.socialLinks.find(link => link.text === "GitHub")?.href;
+const resumeUrl = SITE_CONTENT.hero.resume;
+const heroImage = SITE_CONTENT.about.image || "/rohitdeshpande.jpg";
 ---
 
 <section class="py-8 md:py-14 w-full">
@@ -26,18 +28,18 @@ const { name, specialty, summary, contact } = Astro.props;
         >Get in Touch</a>
         <a
           class="inline-block rounded-full bg-white text-primary border border-primary px-8 py-4 text-sm leading-5 font-medium cursor-pointer text-center hover:bg-primary hover:text-white transition-colors duration-200"
-          href="https://somaiya0-my.sharepoint.com/:b:/g/personal/rohit_sd_somaiya_edu/EcTycmheCOFDoUBHYXe8Et8BxUMp62ub4MhYDLCBxnxy8Q?e=s8o056" target="_blank" rel="noopener noreferrer"
+          href={resumeUrl} target="_blank" rel="noopener noreferrer"
         >View My Resume</a>
         <a
           class="inline-block rounded-full bg-black text-primary border border-primary px-8 py-4 text-sm leading-5 font-medium cursor-pointer text-center hover:bg-primary hover:text-white transition-colors duration-200"
-          href="https://github.com/irohitdeshpande" target="_blank" rel="noopener noreferrer"
+          href={githubUrl} target="_blank" rel="noopener noreferrer"
         >GitHub Profile</a>
       </div>
     </div>
     {/* Right: Picture */}
     <div class="flex-1 flex justify-center md:justify-end items-center">
       {/* Replace src with your image path */}
-      <img src="/rohitdeshpande.jpg" alt="Rohit Deshpande" class="w-64 h-64 md:w-[28rem] md:h-[28rem] rounded-2xl object-cover shadow-lg bg-white/10" />
+      <img src={heroImage} alt={name} class="w-50 h-80 md:w-[30rem] md:h-[40rem] rounded-2xl object-cover shadow-lg bg-white/10" />
     </div>
   </div>
 </section>

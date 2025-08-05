@@ -22,6 +22,8 @@ export interface HeroProps {
   specialty: string;
   summary: string;
   email: string;
+  resume?: string;
+  heroImage: string;
 }
 
 export interface ExperienceProps {
@@ -30,6 +32,7 @@ export interface ExperienceProps {
   startDate: string;
   endDate: string;
   summary: string | string[];
+  image?: string;
 }
 
 export interface ProjectProps {

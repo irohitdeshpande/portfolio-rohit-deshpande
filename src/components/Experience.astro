@@ -10,42 +10,50 @@ const { experience } = Astro.props;
 ---
 
 <Section text="Work Experience" href="experience">
-  <div class="space-y-6 sm:space-y-8">
-    {experience.map(({ company, position, startDate, endDate, summary }, index) => {
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {experience.slice(0, 2).map(({ company, position, startDate, endDate, summary, image }, index) => {
       const isCurrent = endDate === "Present";
       return (
         <div class="group">
-          <div class={`
-            relative p-4 sm:p-6 rounded-xl transition-all duration-200 ease-out
+          <div class={`min-h-[22rem]
+            relative p-5 sm:p-7 rounded-2xl transition-all duration-200 ease-out
             ${isCurrent 
               ? 'bg-white/8 border border-primary/20' 
               : 'bg-white/3 border border-white/5 hover:bg-white/5'
             }
           `}>
-            {/* Header Section */}
-            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
-              <div class="flex-1 min-w-0">
-                <h3 class="text-lg sm:text-xl font-semibold text-white mb-1 sm:mb-2 leading-tight sm:leading-snug break-words">
-                  {company}
-                </h3>
-                <h4 class="text-base sm:text-lg font-medium mb-2 leading-tight text-primary">
-                  {position}
-                </h4>
+            {/* Header Section with Timeline Badge */}
+            <div class="flex items-center gap-3 mb-3 justify-between">
+              <div class="flex items-center gap-3 min-w-0">
+                {image && (
+                  <img
+                    src={image}
+                    alt={company}
+                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-white/20 shadow"
+                  />
+                )}
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-xl sm:text-2xl font-bold text-white leading-tight sm:leading-snug break-words">
+                    {company}
+                  </h3>
+                  <h4 class="text-lg sm:text-xl font-semibold leading-tight text-primary">
+                    {position}
+                  </h4>
+                </div>
               </div>
-              {/* Timeline Badge */}
               <div class={`
-                flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium shrink-0
+                flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-xs sm:text-sm font-medium shrink-0
                 ${isCurrent 
                   ? 'bg-primary/10 text-primary border border-primary/20' 
                   : 'bg-white/5 text-white/60 border border-white/10'
                 }
               `}>
-                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
                 <span class="whitespace-nowrap">{startDate} — {endDate}</span>
                 {isCurrent && (
-                  <span class="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full whitespace-nowrap">
+                  <span class="ml-1 px-1.5 py-0.5 bg-primary/20 text-primary text-[10px] rounded-full whitespace-nowrap">
                     Current
                   </span>
                 )}
@@ -58,30 +66,24 @@ const { experience } = Astro.props;
                   {summary.map((item, itemIndex) => (
                     <li class="flex items-start gap-2 sm:gap-3 text-white/80 leading-relaxed">
                       <div class={`
-                        w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full mt-1.5 sm:mt-2 shrink-0
+                        w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full mt-2 sm:mt-2.5 shrink-0
                         ${isCurrent ? 'bg-primary' : 'bg-white/40'}
                       `}></div>
-                      <span class="text-xs sm:text-sm">{item}</span>
+                      <span class="text-sm sm:text-base">{item}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p class="text-white/80 leading-relaxed text-xs sm:text-sm pr-4 sm:pr-8">{summary}</p>
+                <p class="text-white/80 leading-relaxed text-sm sm:text-base pr-4 sm:pr-8">{summary}</p>
               )}
             </div>
             {/* Subtle Current Indicator */}
             {isCurrent && (
               <div class="absolute top-3 sm:top-4 right-3 sm:right-4">
-                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full opacity-60"></div>
+                <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-primary rounded-full opacity-60"></div>
               </div>
             )}
           </div>
-          {/* Subtle Separator */}
-          {index < experience.length - 1 && (
-            <div class="flex justify-center mt-6 sm:mt-8">
-              <div class="w-8 sm:w-12 h-px bg-white/10"></div>
-            </div>
-          )}
         </div>
       );
     })}
