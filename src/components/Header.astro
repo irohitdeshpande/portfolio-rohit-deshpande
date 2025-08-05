@@ -30,6 +30,14 @@ const { siteLogo, navLinks } = Astro.props;
         id="main-menu"
       >
         <ul class="flex flex-col gap-2 sm:flex-row sm:gap-2">
+          <li class="relative">
+            <a
+              class={`nav-item relative block px-2 py-1 text-sm font-medium transition-all duration-500 after:absolute after:bottom-0 after:left-2/4 after:h-2 after:w-1 after:-translate-x-2/4 after:text-primary after:opacity-0 after:content-['•'] hover:text-white`}
+              href="#top"
+            >
+              Home
+            </a>
+          </li>
           {
             navLinks.map((link) => (
               <li class="relative">
