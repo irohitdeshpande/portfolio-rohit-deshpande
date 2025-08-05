@@ -71,19 +71,21 @@ const displayEducation = education;
         <div class="group flex-1">
           <div class={`relative p-5 sm:p-6 rounded-2xl transition-all duration-300 ease-out shadow-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:shadow-xl`}>
             <div class="flex flex-col gap-3 mb-3">
-              <div class="flex flex-col gap-1">
-                <h3 class="text-xl font-bold text-white leading-tight tracking-tight">
-                  {edu.institution}
-                </h3>
-                <h4 class="text-base font-medium text-white/80">
-                  {edu.degree}
-                </h4>
-              </div>
-              <div class="flex flex-row items-center gap-2 px-3 py-1 rounded-lg text-xs font-medium bg-white/10 text-white/70 border border-white/15">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                <span class="whitespace-nowrap">{edu.startDate} — {edu.endDate}</span>
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <div>
+                  <h3 class="text-xl font-bold text-white leading-tight tracking-tight">
+                    {edu.institution}
+                  </h3>
+                  <h4 class="text-base font-medium text-white/80">
+                    {edu.degree}
+                  </h4>
+                </div>
+                <div class="flex flex-row items-center gap-2 px-3 py-1 rounded-lg text-xs font-medium bg-white/10 text-white/70 border border-white/15 mt-2 sm:mt-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span class="whitespace-nowrap">{edu.startDate} — {edu.endDate}</span>
+                </div>
               </div>
               {edu.grade && (
                 <div class="flex items-center gap-2 mt-1">

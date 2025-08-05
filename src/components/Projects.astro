@@ -22,9 +22,9 @@ const { projects } = Astro.props;
             ))}
           </div>
           <p class="text-xl text-white/80 mb-6">{summary}</p>
-          <div class="flex gap-8 justify-center mb-6">
-            <a href={linkSource} target="_blank" class="text-lg text-primary/80 underline underline-offset-2 hover:text-primary/100 transition-colors px-2">Source</a>
-            <a href={linkPreview} target="_blank" class="text-lg text-primary/80 underline underline-offset-2 hover:text-primary/100 transition-colors px-2">Preview</a>
+          <div class="flex gap-6 justify-center mb-6">
+            <a href={linkSource} target="_blank" class="inline-block rounded-full bg-primary/90 text-white text-lg font-semibold px-6 py-2 shadow hover:bg-primary/100 transition-colors">Source</a>
+            <a href={linkPreview} target="_blank" class="inline-block rounded-full bg-white text-primary text-lg font-semibold px-6 py-2 shadow hover:bg-primary/10 hover:text-primary transition-colors">Preview</a>
           </div>
           {image && (
             <div class="w-full flex justify-center">
