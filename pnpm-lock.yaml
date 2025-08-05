@@ -42,6 +42,9 @@ importers:
         specifier: ^44.7.2
         version: 44.7.2(rollup@4.39.0)
     devDependencies:
+      '@types/marked':
+        specifier: ^5.0.2
+        version: 5.0.2
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -837,6 +840,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/marked@5.0.2':
+    resolution: {integrity: sha512-OucS4KMHhFzhz27KxmWg7J+kIYqyqoW5kdIEI319hqARQQUTqhao3M/F+uFnDXD0Rg72iDDZxZNxq5gvctmLlg==}
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
@@ -4005,6 +4011,8 @@ snapshots:
       '@types/unist': 3.0.3
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/marked@5.0.2': {}
 
   '@types/mdast@4.0.4':
     dependencies:
