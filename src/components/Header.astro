@@ -85,7 +85,14 @@ const { siteLogo, navLinks } = Astro.props;
       if (!this.button || !this.menu) return;
 
       const toggleMenu = () => {
-        this.menu.classList.toggle("hidden");
+        // Toggle hidden class and force display property
+        if (this.menu.classList.contains("hidden")) {
+          this.menu.classList.remove("hidden");
+          this.menu.style.setProperty("display", "block", "important");
+        } else {
+          this.menu.classList.add("hidden");
+          this.menu.style.setProperty("display", "none", "important");
+        }
         const isHidden = this.menu.classList.contains("hidden");
         this.button.setAttribute("aria-expanded", `${!isHidden}`);
       };
@@ -97,6 +104,7 @@ const { siteLogo, navLinks } = Astro.props;
         item.addEventListener("click", () => {
           if (window.innerWidth < 640) {
             this.menu.classList.add("hidden");
+            this.menu.style.setProperty("display", "none", "important");
             this.button.setAttribute("aria-expanded", "false");
           }
         });
@@ -327,6 +335,10 @@ const { siteLogo, navLinks } = Astro.props;
   /* Mobile menu styling */
   .nav-menu {
     box-shadow: 0 20px 25px -5px var(--shadow), 0 10px 10px -5px var(--shadow);
+    display: none !important;
+  }
+  .nav-menu:not(.hidden) {
+    display: block !important;
   }
 
   @media (min-width: 640px) {
