@@ -164,7 +164,7 @@ INSTRUCTIONS:
               { role: 'system', content: PORTFOLIO_CONTEXT },
               { role: 'user', content: message }
             ],
-            max_tokens: 3000, // Adjusted for longer responses
+            max_tokens: 5400, // Adjusted for longer responses
             // max_tokens: 600, // Original value, can be adjusted based on needs
             temperature: 0.7
           })
