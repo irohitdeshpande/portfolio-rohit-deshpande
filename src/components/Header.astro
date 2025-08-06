@@ -29,7 +29,7 @@ const { siteLogo, navLinks } = Astro.props;
         <span style="color: var(--text-primary); display: flex; align-items: center;"><Menu /></span>
       </button>
       <nav
-        class="nav-menu absolute top-16 right-4 w-48 hidden rounded-xl px-4 py-4 sm:static sm:block sm:border-0 sm:bg-transparent sm:p-0 sm:w-auto"
+        class="nav-menu hidden sm:block absolute top-16 right-4 w-48 rounded-xl px-4 py-4 sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:w-auto"
         id="main-menu"
         style="background-color: var(--bg-primary) !important; border: 1px solid var(--border-color); backdrop-filter: blur(10px);"
       >
@@ -325,10 +325,10 @@ const { siteLogo, navLinks } = Astro.props;
   /* Mobile menu styling */
   .nav-menu {
     box-shadow: 0 20px 25px -5px var(--shadow), 0 10px 10px -5px var(--shadow);
-    display: none !important;
   }
-  .nav-menu:not(.hidden) {
-    display: block !important;
+  
+  .nav-menu.hidden {
+    display: none !important;
   }
 
   @media (min-width: 640px) {
@@ -337,6 +337,11 @@ const { siteLogo, navLinks } = Astro.props;
       border: none !important;
       backdrop-filter: none !important;
       box-shadow: none !important;
+      display: block !important;
+    }
+    
+    .nav-menu.hidden {
+      display: block !important;
     }
   }
 
