@@ -2,10 +2,6 @@
 
 This repository contains the source code for the personal portfolio website of Rohit Deshpande, a Computer Engineering student at K.J. Somaiya College of Engineering. The website is designed to showcase academic achievements, technical skills, professional experience, and selected projects. It features a modern, responsive design and an integrated AI-powered chatbot that can answer questions about the portfolio content.
 
-## Live Website
-
-The portfolio is deployed at: [https://portfolio-rohit-deshpande.vercel.app/](Link)
-
 ## Project Overview
 
 The portfolio website is built using Astro, TypeScript, and TailwindCSS. It is structured as a single-page application with multiple sections, including About, Education, Experience, Projects, Skills, and Contact. The site is optimized for performance, accessibility, and search engine visibility.
