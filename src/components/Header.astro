@@ -85,14 +85,7 @@ const { siteLogo, navLinks } = Astro.props;
       if (!this.button || !this.menu) return;
 
       const toggleMenu = () => {
-        // Toggle hidden class and force display property
-        if (this.menu.classList.contains("hidden")) {
-          this.menu.classList.remove("hidden");
-          this.menu.style.setProperty("display", "block", "important");
-        } else {
-          this.menu.classList.add("hidden");
-          this.menu.style.setProperty("display", "none", "important");
-        }
+        this.menu.classList.toggle("hidden");
         const isHidden = this.menu.classList.contains("hidden");
         this.button.setAttribute("aria-expanded", `${!isHidden}`);
       };
@@ -104,7 +97,6 @@ const { siteLogo, navLinks } = Astro.props;
         item.addEventListener("click", () => {
           if (window.innerWidth < 640) {
             this.menu.classList.add("hidden");
-            this.menu.style.setProperty("display", "none", "important");
             this.button.setAttribute("aria-expanded", "false");
           }
         });
