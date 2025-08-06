@@ -115,7 +115,7 @@ INSTRUCTIONS:
               { role: "system", content: PORTFOLIO_CONTEXT },
               { role: "user", content: message }
             ],
-            max_tokens: 600,
+            max_tokens: 5400,
             temperature: 0.7
           })
         });
@@ -142,7 +142,7 @@ INSTRUCTIONS:
               { role: "system", content: PORTFOLIO_CONTEXT },
               { role: "user", content: message }
             ],
-            max_tokens: 600,
+            max_tokens: 5400,
             temperature: 0.7
           })
         });
