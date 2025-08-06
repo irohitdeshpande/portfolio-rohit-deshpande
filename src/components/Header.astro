@@ -91,8 +91,15 @@ const { siteLogo, navLinks } = Astro.props;
       };
 
       this.button.addEventListener("click", toggleMenu);
+
+      // Always add click listeners to nav items to close menu on click (mobile only)
       this.navItems.forEach((item) => {
-        item.addEventListener("click", toggleMenu);
+        item.addEventListener("click", () => {
+          if (window.innerWidth < 640) {
+            this.menu.classList.add("hidden");
+            this.button.setAttribute("aria-expanded", "false");
+          }
+        });
       });
     }
 
