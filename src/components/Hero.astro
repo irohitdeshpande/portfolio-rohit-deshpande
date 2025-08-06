@@ -7,31 +7,31 @@ const resumeUrl = SITE_CONTENT.hero.resume;
 const heroImage = SITE_CONTENT.about.image || "/rohitdeshpande.jpg";
 ---
 
-<section class="py-8 md:py-14 w-full">
+<section class="py-8 sm:py-10 md:py-14 w-full px-4 sm:px-6">
   <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 max-w-screen-xl mx-auto">
     {/* Left: Text */}
-    <div class="flex-1 flex flex-col items-center md:items-start">
-      <h1 class="mb-1 font-serif font-bold tracking-tightest text-center md:text-left">
-        <span id="typed-intro" class="block text-primary text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight min-h-[2.5em] m-0"></span>
-        <span id="typed-name" class="block text-white text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight min-h-[2.5em] m-0"></span>
+    <div class="flex-1 flex flex-col items-center md:items-start w-full">
+      <h1 class="mb-1 font-serif font-bold tracking-tightest text-center md:text-left w-full">
+        <span id="typed-intro" class="block hero-intro text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight min-h-[2.5em] m-0"></span>
+        <span id="typed-name" class="block hero-name text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight min-h-[2.5em] m-0"></span>
       </h1>
-      <p class="mb-4 font-serif text-lg leading-[32px] font-semibold tracking-tighter text-primary sm:text-2xl md:text-3xl text-center md:text-left">
+      <p class="mb-4 font-serif text-base leading-[28px] font-semibold tracking-tighter hero-specialty sm:text-lg md:text-xl lg:text-2xl text-center md:text-left">
         {specialty}
       </p>
-      <p class="mb-6 text-base font-normal text-neutral md:text-lg text-center md:text-left">
+      <p class="mb-6 text-sm sm:text-base font-normal hero-summary md:text-base text-center md:text-left max-w-lg">
         {summary}
       </p>
-      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto justify-center md:justify-start">
+      <div class="flex flex-col xs:flex-row sm:flex-row gap-3 sm:gap-4 w-full xs:w-auto sm:w-auto justify-center md:justify-start">
         <a
-          class="inline-block rounded-full bg-primary px-8 py-4 text-sm leading-5 font-medium text-[#fff] cursor-pointer text-center"
+          class="inline-block rounded-full btn-primary px-6 sm:px-8 py-3 sm:py-4 text-sm leading-5 font-medium cursor-pointer text-center"
           href="#contact"
         >Get in Touch</a>
         <a
-          class="inline-block rounded-full bg-white text-primary border border-primary px-8 py-4 text-sm leading-5 font-medium cursor-pointer text-center hover:bg-primary hover:text-white transition-colors duration-200"
+          class="inline-block rounded-full btn-resume px-6 sm:px-8 py-3 sm:py-4 text-sm leading-5 font-medium cursor-pointer text-center transition-colors duration-200 border-2"
           href={resumeUrl} target="_blank" rel="noopener noreferrer"
         >View My Resume</a>
         <a
-          class="inline-block rounded-full bg-black text-primary border border-primary px-8 py-4 text-sm leading-5 font-medium cursor-pointer text-center hover:bg-primary hover:text-white transition-colors duration-200"
+          class="inline-block rounded-full btn-github px-6 sm:px-8 py-3 sm:py-4 text-sm leading-5 font-medium cursor-pointer text-center transition-colors duration-200"
           href={githubUrl} target="_blank" rel="noopener noreferrer"
         >GitHub Profile</a>
       </div>
@@ -39,10 +39,61 @@ const heroImage = SITE_CONTENT.about.image || "/rohitdeshpande.jpg";
     {/* Right: Picture */}
     <div class="flex-1 flex justify-center md:justify-end items-center">
       {/* Replace src with your image path */}
-      <img src={heroImage} alt={name} class="w-50 h-80 md:w-[30rem] md:h-[40rem] rounded-2xl object-cover shadow-lg bg-white/10" />
+      <img src={heroImage} alt={name} class="w-48 h-64 xs:w-52 xs:h-72 sm:w-60 sm:h-80 md:w-[25rem] md:h-[35rem] lg:w-[30rem] lg:h-[40rem] rounded-2xl object-cover shadow-lg hero-image" />
     </div>
   </div>
 </section>
+
+<style>
+  /* Hero component styling - dark mode only */
+  .hero-intro {
+    color: var(--text-primary);
+  }
+
+  .hero-name {
+    color: var(--text-secondary);
+  }
+
+  .hero-specialty {
+    color: var(--text-primary);
+  }
+
+  .hero-summary {
+    color: var(--text-neutral);
+  }
+
+  .btn-primary {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+  }
+
+
+  .btn-resume {
+    background-color: #fff;
+    color: var(--text-primary);
+    border: 2px solid var(--text-primary);
+  }
+  .btn-resume:hover {
+    background-color: var(--text-primary);
+    color: #fff;
+    border-color: var(--text-primary);
+  }
+
+  .btn-github {
+    background-color: #18181b;
+    color: #fff;
+    border: 2px solid #18181b;
+  }
+  .btn-github:hover {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .hero-image {
+    background-color: var(--bg-secondary);
+  }
+</style>
 
 <script>
   const introText = "नमस्कार! मी";

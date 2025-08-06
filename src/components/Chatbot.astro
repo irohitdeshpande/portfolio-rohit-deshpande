@@ -1,0 +1,387 @@
+---
+import { SITE_CONFIG, SITE_CONTENT } from "../config";
+
+const chatbotQA = SITE_CONTENT.chatbot;
+---
+
+<div id="chatbot-container" class="fixed bottom-5 right-5 z-50">
+  <button
+    id="chatbot-toggle"
+    class="w-12 h-12 sm:w-14 sm:h-14 border-2 chat-toggle-btn rounded-lg shadow-lg flex items-center justify-center transition-all duration-200
+      fixed bottom-5 right-5 z-50
+      sm:static sm:bottom-auto sm:right-auto
+      p-0 active:scale-95 group"
+    aria-label="Open chat"
+  >
+    <span class="h-6 w-6 sm:h-7 sm:w-7 min-w-[1.5rem] min-h-[1.5rem] flex items-center justify-center">
+      <img src="/chat-icon.svg" alt="Chat icon" class="h-6 w-6 sm:h-7 sm:w-7 chat-icon transition-colors duration-200" style="filter: none; color: var(--text-primary);" />
+    </span>
+  </button>
+  <div id="chatbot-window" class="hidden absolute bottom-16 sm:bottom-20 right-0 w-[350px] sm:w-[450px] lg:w-[550px] backdrop-blur-sm rounded-lg shadow-xl border max-h-[600px] sm:max-h-[700px] max-w-[calc(100vw-1rem)] sm:max-w-[calc(100vw-2rem)] chatbot-window">
+    <div class="flex flex-col h-full max-h-[600px] sm:max-h-[700px]">
+    <div class="p-4 rounded-t-lg border-b chatbot-header bg-primary" style="border-color: var(--border-color) !important;">
+      <h3 class="text-lg font-semibold text-white" style="color: #fff !important;">Chat with me</h3>
+      <div id="llm-status" class="text-xs opacity-75 mt-1">Loading AI capabilities...</div>
+    </div>
+    <div id="chatbot-messages" class="flex-1 p-3 sm:p-4 overflow-y-auto h-80 sm:h-96 lg:h-[450px] space-y-3 scroll-smooth chatbot-messages"></div>
+    <div id="emoji-picker" class="hidden p-2 border-t emoji-picker">
+      <div class="grid grid-cols-8 gap-1 max-h-24 overflow-y-auto">
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">😀</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">😊</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">😄</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">😁</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">🙂</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">😍</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">🤔</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">😮</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">👍</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">👎</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">❤️</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">🎉</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">🚀</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">💡</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">🔥</button>
+        <button class="emoji-btn p-1 hover:bg-neutral/20 rounded text-lg">⭐</button>
+      </div>
+    </div>
+    <div class="p-3 sm:p-4 border-t chatbot-input-area" style="border-color: var(--border-color) !important; background-color: var(--bg-secondary) !important;">
+      <div class="flex items-center space-x-2">
+        <button id="emoji-toggle" class="p-1 sm:p-2 hover:bg-neutral/20 rounded-md transition-colors text-sm sm:text-base emoji-toggle-btn" style="color: var(--text-neutral);">
+          😊
+        </button>
+        <input type="text" id="chatbot-input" class="flex-1 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 chatbot-input-field" style="background-color: var(--bg-tertiary); border-color: var(--border-color); color: var(--text-primary); --placeholder-color: var(--text-neutral);" placeholder="Ask a question...">
+        <button id="chatbot-send" class="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-md active:scale-95 transition-all duration-200 font-medium chatbot-send-btn">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const chatbotToggle = document.getElementById("chatbot-toggle") as HTMLButtonElement;
+    const chatbotWindow = document.getElementById("chatbot-window") as HTMLDivElement;
+    const emojiToggle = document.getElementById("emoji-toggle") as HTMLButtonElement;
+    const emojiPicker = document.getElementById("emoji-picker") as HTMLDivElement;
+    const chatbotMessages = document.getElementById("chatbot-messages") as HTMLDivElement;
+    const chatbotInput = document.getElementById("chatbot-input") as HTMLInputElement;
+    const chatbotSend = document.getElementById("chatbot-send") as HTMLButtonElement;
+    const llmStatus = document.getElementById("llm-status") as HTMLDivElement;
+
+    // Early return if critical elements are missing
+    if (!chatbotToggle || !chatbotWindow || !chatbotMessages || !chatbotInput || !chatbotSend) {
+      console.error('Critical chatbot elements not found');
+      return;
+    }
+
+    // Optional elements
+    const hasEmojiSupport = emojiToggle && emojiPicker;
+
+    let llmAvailable = false;
+    let externalAIAvailable = false;
+    let isWelcomeShown = false;
+
+    // Import AI functions from the centralized module
+    const { getChatbotResponse, isLLMAvailable, isExternalAIAvailable } = await import('../lib/localLLM.js');
+
+    // UI Functions
+    const addMessage = (sender: string, message: string) => {
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `flex ${sender === "user" ? "justify-end" : "justify-start"} mb-3`;
+      
+      if (sender === "bot") {
+        messageDiv.innerHTML = `
+          <div class="flex items-start space-x-2 max-w-[85%]">
+            <img src="/rohitdeshpande.jpg" alt="Rohit" class="w-8 h-8 rounded-full mt-1 flex-shrink-0">
+            <div class="bg-neutral/20 text-white px-4 py-2 rounded-lg text-sm leading-relaxed">
+              ${message}
+            </div>
+          </div>
+        `;
+      } else {
+        messageDiv.innerHTML = `
+          <div class="bg-primary text-white px-4 py-2 rounded-lg max-w-[85%] text-sm leading-relaxed">
+            ${message}
+          </div>
+        `;
+      }
+      
+      chatbotMessages.appendChild(messageDiv);
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    };
+
+    const addTypingIndicator = () => {
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "flex justify-start mb-3";
+      typingDiv.id = "typing-indicator";
+      typingDiv.innerHTML = `
+        <div class="flex items-start space-x-2 max-w-[85%]">
+          <img src="/rohitdeshpande.jpg" alt="Rohit" class="w-8 h-8 rounded-full mt-1 flex-shrink-0">
+          <div class="bg-neutral/20 text-white px-4 py-2 rounded-lg text-sm leading-relaxed">
+            <div class="flex space-x-1">
+              <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <div class="w-2 h-2 bg-white rounded-full animate-pulse" style="animation-delay: 0.1s;"></div>
+              <div class="w-2 h-2 bg-white rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      chatbotMessages.appendChild(typingDiv);
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    };
+
+    const removeTypingIndicator = () => {
+      const typingIndicator = document.getElementById("typing-indicator");
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    };
+
+    const showWelcomeMessage = () => {
+      if (!isWelcomeShown) {
+        setTimeout(() => {
+          const welcomeMessages = [
+            "Namaskar! 🙏 I'm Rohit Deshpande! Welcome to my portfolio! Feel free to ask me anything about my projects, skills, or journey in tech!",
+            "Namaskar! 🙏 Great to see you here! I'm Rohit, and I love talking about technology, AI/ML, and my work. What interests you most?",
+            "Kasa Kay! 🙏 I'm Rohit Deshpande. Welcome to my portfolio! Ask me anything about my projects, skills, or journey in tech!"
+          ];
+          
+          const welcomeMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+          let statusMessage = "";
+          
+          if (externalAIAvailable && llmAvailable) {
+            statusMessage = " (Powered by Cloud + Local AI!) ";
+          } else if (externalAIAvailable) {
+            statusMessage = " (Enhanced with Cloud AI!) ";
+          } else if (llmAvailable) {
+            statusMessage = " (Enhanced with Local AI!) ";
+          } else {
+            statusMessage = " (Smart pattern matching!) ";
+          }
+          
+          addMessage("bot", welcomeMessage + statusMessage);
+        }, 500);
+        isWelcomeShown = true;
+      }
+    };
+
+    const handleUserInput = async () => {
+      const userInput = chatbotInput.value.trim();
+      if (!userInput) return;
+
+      addMessage("user", userInput);
+      chatbotInput.value = "";
+      if (emojiPicker && hasEmojiSupport) {
+        emojiPicker.classList.add("hidden");
+      }
+
+      addTypingIndicator();
+
+      try {
+        // Use the centralized getChatbotResponse function
+        const response = await getChatbotResponse(userInput);
+        removeTypingIndicator();
+        
+        let responseMessage = response.response;
+        
+        addMessage("bot", responseMessage);
+        
+      } catch (error) {
+        console.error('Error getting response:', error);
+        removeTypingIndicator();
+        addMessage("bot", "Sorry, I'm having trouble processing that right now! 😅 Try asking about my skills, projects, or experience instead!");
+      }
+    };
+
+    // Initialize AI services
+    try {
+      // Check both AI services in parallel
+      const [localLLM, externalAI] = await Promise.all([
+        isLLMAvailable(),
+        isExternalAIAvailable()
+      ]);
+      
+      llmAvailable = localLLM;
+      externalAIAvailable = externalAI;
+      
+      // Update status based on available services
+      let statusText = "Chat Ready!";
+      if (externalAIAvailable && llmAvailable) {
+        statusText = "AI-Powered Chat Ready!";
+      } else if (externalAIAvailable) {
+        statusText = "Cloud AI Chat Ready!";
+      } else if (llmAvailable) {
+        statusText = "Local AI Chat Ready!";
+      } else {
+        statusText = "Smart Chat Ready!";
+      }
+      
+      if (llmStatus) llmStatus.textContent = statusText;
+      console.log('AI Services Status:', { local: llmAvailable, external: externalAIAvailable });
+      
+    } catch (error) {
+      if (llmStatus) llmStatus.textContent = "Chat Ready!";
+      console.log('AI services check failed:', error);
+    }
+
+    // Event listeners
+    chatbotToggle.addEventListener("click", () => {
+      chatbotWindow.classList.toggle("hidden");
+      if (!chatbotWindow.classList.contains("hidden")) {
+        showWelcomeMessage();
+      }
+    });
+
+    // Listen for AI key updates (if needed in future)
+    window.addEventListener('ai-keys-updated', async () => {
+      // Recheck AI availability
+      externalAIAvailable = await isExternalAIAvailable();
+      
+      // Update status
+      let statusText = "Chat Ready!";
+      if (externalAIAvailable && llmAvailable) {
+        statusText = "AI-Powered Chat Ready!";
+      } else if (externalAIAvailable) {
+        statusText = "Cloud AI Chat Ready!";
+      } else if (llmAvailable) {
+        statusText = "Local AI Chat Ready!";
+      } else {
+        statusText = "Smart Chat Ready!";
+      }
+      
+      if (llmStatus) llmStatus.textContent = statusText;
+      console.log('AI keys updated. External AI available:', externalAIAvailable);
+    });
+
+    if (hasEmojiSupport) {
+      emojiToggle.addEventListener("click", () => {
+        emojiPicker.classList.toggle("hidden");
+      });
+    }
+
+    const emojiButtons = document.querySelectorAll(".emoji-btn") as NodeListOf<HTMLButtonElement>;
+    emojiButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (chatbotInput && btn.textContent) {
+          chatbotInput.value += btn.textContent;
+          chatbotInput.focus();
+        }
+      });
+    });
+
+    chatbotSend.addEventListener("click", handleUserInput);
+
+    chatbotInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleUserInput();
+      }
+    });
+
+    // Close emoji picker when clicking outside
+    if (hasEmojiSupport) {
+      document.addEventListener("click", (event) => {
+        if (event.target instanceof Node) {
+          if (!emojiToggle.contains(event.target) && !emojiPicker.contains(event.target)) {
+            emojiPicker.classList.add("hidden");
+          }
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+
+  /* Chat toggle button: primary background, white icon, darker on hover */
+  .chat-toggle-btn {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--text-primary) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+  .chat-toggle-btn:focus {
+    outline: 1px solid var(--text-primary);
+  }
+  .chat-toggle-btn:hover {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--text-primary) !important;
+    color: var(--text-primary) !important;
+    filter: brightness(0.97);
+  }
+  .chat-toggle-btn:active {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    transform: scale(0.95);
+    filter: brightness(0.94);
+  }
+  .chat-icon {
+    filter: none !important;
+    color: var(--text-primary) !important;
+    transition: filter 0.2s;
+  }
+
+  /* Theme-aware chat window styling */
+  .chatbot-window {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 10px 25px var(--shadow);
+  }
+
+  .chatbot-messages {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  .chatbot-input-field {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .chatbot-input-field::placeholder {
+    color: var(--text-neutral) !important;
+  }
+
+  .chatbot-input-field:focus {
+    border-color: var(--text-accent) !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(87, 85, 255, 0.2);
+  }
+
+  .emoji-picker {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .emoji-btn:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  .emoji-toggle-btn:hover {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .chatbot-send-btn {
+    background-color: var(--text-primary) !important;
+    color: #fff !important;
+  }
+  .chatbot-send-btn:hover {
+    background-color: #1e2a4a !important;
+    color: #fff !important;
+    opacity: 0.95;
+  }
+
+  .chatbot-input-area {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  /* Responsive adjustments */
+  @media (prefers-reduced-motion: reduce) {
+    .chat-toggle-btn {
+      transition: none !important;
+    }
+  }
+</style>

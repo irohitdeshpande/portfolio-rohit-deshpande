@@ -10,40 +10,36 @@ const { siteLogo, navLinks } = Astro.props;
 
 <header
   id="main-header"
-  class="sticky top-0 z-50 w-full bg-black transition-transform duration-300 ease-in-out px-3 py-3 sm:px-5 sm:py-4"
+  class="header-scroll w-full transition-transform duration-300 ease-in-out px-4 py-5 sm:px-6 sm:py-7"
+  style="background-color: var(--bg-primary) !important; transform: translateY(0);"
 >
-  <div class="flex items-center justify-between max-w-5xl mx-auto w-full">
-    <a href="/" aria-label="Home link" class="flex items-center">
+  <div class="flex items-center justify-between max-w-6xl mx-auto w-full">
+    <a href="#top" aria-label="Home - ROHIT DESHPANDE" class="flex items-center flex-shrink-0">
+      <span class="text-base sm:text-lg md:text-xl font-bold tracking-tight whitespace-nowrap uppercase" style="color: var(--text-secondary) !important; letter-spacing: 0.04em;">ROHIT DESHPANDE</span>
     </a>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 ml-auto">
       <button
         type="button"
         id="menu-button"
-        class="px-2 py-1 text-neutral rounded-lg focus:outline-none focus:ring-2 focus:ring-primary sm:hidden"
+        class="px-2 py-1 text-neutral rounded-lg focus:outline-none focus:ring-2 focus:ring-primary sm:hidden flex items-center justify-center"
         aria-expanded="false"
         aria-controls="main-menu"
       >
         <Menu />
       </button>
       <nav
-        class="absolute top-14 right-3 w-40 hidden rounded-xl border border-neutral/40 bg-black px-3 py-3 text-neutral sm:static sm:block sm:border-0 sm:bg-transparent sm:p-0"
+        class="nav-menu absolute top-16 right-4 w-48 hidden rounded-xl px-4 py-4 sm:static sm:block sm:border-0 sm:bg-transparent sm:p-0 sm:w-auto"
         id="main-menu"
+        style="background-color: var(--bg-primary) !important; border: 1px solid var(--border-color); backdrop-filter: blur(10px);"
       >
-        <ul class="flex flex-col gap-2 sm:flex-row sm:gap-2">
-          <li class="relative">
-            <a
-              class={`nav-item relative block px-2 py-1 text-sm font-medium transition-all duration-500 after:absolute after:bottom-0 after:left-2/4 after:h-2 after:w-1 after:-translate-x-2/4 after:text-primary after:opacity-0 after:content-['•'] hover:text-white`}
-              href="#top"
-            >
-              Home
-            </a>
-          </li>
+        <ul class="flex flex-col gap-3 sm:flex-row sm:gap-6 sm:items-center">
           {
             navLinks.map((link) => (
               <li class="relative">
                 <a
-                  class={`nav-item relative block px-2 py-1 text-sm font-medium transition-all duration-500 after:absolute after:bottom-0 after:left-2/4 after:h-2 after:w-1 after:-translate-x-2/4 after:text-primary after:opacity-0 after:content-['•'] hover:text-white`}
+                  class={`nav-item relative block px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-primary rounded-md sm:px-2 sm:py-1 after:absolute after:bottom-0 after:left-2/4 after:h-2 after:w-1 after:-translate-x-2/4 after:text-primary after:opacity-0 after:content-['•'] sm:after:block`}
                   href={link.href}
+                  data-target={link.href}
                 >
                   {link.text}
                 </a>
@@ -56,101 +52,377 @@ const { siteLogo, navLinks } = Astro.props;
   </div>
 </header>
 
-<script>
-  // Toggle mobile menu
-  const button = document.querySelector("#menu-button");
-  const menu = document.querySelector("#main-menu");
-  const navItems = document.querySelectorAll("#main-menu > ul > li > a");
+<script is:inline>
+  class NavigationManager {
+    constructor() {
+      this.button = document.querySelector("#menu-button");
+      this.menu = document.querySelector("#main-menu");
+      this.navItems = document.querySelectorAll("#main-menu > ul > li > a");
+      this.header = document.getElementById("main-header");
+      this.sections = [];
+      this.currentActiveSection = null;
+      this.lastScrollY = window.scrollY;
+      this.hideTimeout = null;
+      this.updateThrottled = false;
+      
+      this.init();
+    }
 
-  const toggleMenu = () => {
-    menu?.classList.toggle("hidden");
-    const isHidden = menu?.classList.contains("hidden");
-    button?.setAttribute("aria-expanded", `${!isHidden}`);
-  };
-
-  button?.addEventListener("click", toggleMenu);
-  navItems.forEach((item) => {
-    item?.addEventListener("click", toggleMenu);
-  });
-
-  // Update navigation based on scroll position with Intersection Observer
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          navItems.forEach((item) => {
-            if (item.getAttribute("href") === `#${entry.target.id}`) {
-              item.classList.add("text-white", "md:after:opacity-100");
-            } else {
-              item.classList.remove("text-white", "md:after:opacity-100");
-            }
-          });
-        }
-      });
-    },
-    { threshold: 0.5 },
-  );
-
-  document.querySelectorAll("section").forEach((section) => {
-    observer.observe(section);
-  });
-
-  // Cleanup observer
-  document.onvisibilitychange = () => {
-    if (document.visibilityState === "hidden") {
-      observer.disconnect();
-    } else {
-      document.querySelectorAll("section").forEach((section) => {
-        observer.observe(section);
+    init() {
+      this.setupMobileMenu();
+      this.collectSections();
+      this.setupScrollHandling();
+      this.updateNavigation();
+      
+      // Handle resize
+      window.addEventListener('resize', () => {
+        this.collectSections();
+        this.updateNavigation();
       });
     }
-  };
 
-  // Hide header on scroll down, show on scroll up
-  let lastScrollY = window.scrollY;
-  const header = document.getElementById("main-header");
-  let ticking = false;
+    setupMobileMenu() {
+      if (!this.button || !this.menu) return;
 
-  function onScroll() {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY;
-        if (currentScrollY > lastScrollY && currentScrollY > 60) {
-          // Scrolling down
-          header && (header.style.transform = "translateY(-100%)");
-        } else {
-          // Scrolling up
-          header && (header.style.transform = "translateY(0)");
-        }
-        lastScrollY = currentScrollY;
-        ticking = false;
+      const toggleMenu = () => {
+        this.menu.classList.toggle("hidden");
+        const isHidden = this.menu.classList.contains("hidden");
+        this.button.setAttribute("aria-expanded", `${!isHidden}`);
+      };
+
+      this.button.addEventListener("click", toggleMenu);
+      this.navItems.forEach((item) => {
+        item.addEventListener("click", toggleMenu);
       });
-      ticking = true;
+    }
+
+    collectSections() {
+      // Get all sections that correspond to navigation links
+      this.sections = [];
+      this.navItems.forEach(navItem => {
+        const href = navItem.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          const sectionId = href.substring(1);
+          const section = document.getElementById(sectionId);
+          if (section) {
+            this.sections.push({
+              id: sectionId,
+              element: section,
+              navItem: navItem
+            });
+          }
+        }
+      });
+    }
+
+    getCurrentSection() {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const headerHeight = this.header ? this.header.offsetHeight : 80;
+      
+      // Adjust scroll position to account for header
+      const adjustedScrollY = scrollY + headerHeight + 50; // 50px buffer
+      
+      let currentSection = null;
+      let bestMatch = -1;
+      
+      for (let i = 0; i < this.sections.length; i++) {
+        const section = this.sections[i];
+        const rect = section.element.getBoundingClientRect();
+        const elementTop = rect.top + scrollY;
+        const elementBottom = elementTop + rect.height;
+        
+        // Check if section is in viewport
+        if (elementTop <= adjustedScrollY && elementBottom > adjustedScrollY) {
+          // Section contains the adjusted scroll position
+          currentSection = section;
+          bestMatch = i;
+          break;
+        } else if (elementTop > adjustedScrollY) {
+          // We've passed all relevant sections, use the previous one
+          if (i > 0) {
+            currentSection = this.sections[i - 1];
+            bestMatch = i - 1;
+          }
+          break;
+        }
+      }
+      
+      // If no section found yet, check which one is closest to the top of viewport
+      if (!currentSection && this.sections.length > 0) {
+        let minDistance = Infinity;
+        this.sections.forEach((section, index) => {
+          const rect = section.element.getBoundingClientRect();
+          const distance = Math.abs(rect.top - headerHeight);
+          if (distance < minDistance) {
+            minDistance = distance;
+            currentSection = section;
+            bestMatch = index;
+          }
+        });
+      }
+      
+      return currentSection;
+    }
+
+    updateNavigation() {
+      if (this.updateThrottled) return;
+      this.updateThrottled = true;
+      
+      requestAnimationFrame(() => {
+        const currentSection = this.getCurrentSection();
+        
+        if (currentSection !== this.currentActiveSection) {
+          // Remove active class from all nav items
+          this.navItems.forEach(item => {
+            item.classList.remove("active", "md:after:opacity-100");
+          });
+          
+          // Add active class to current section's nav item
+          if (currentSection && currentSection.navItem) {
+            currentSection.navItem.classList.add("active", "md:after:opacity-100");
+          }
+          
+          this.currentActiveSection = currentSection;
+        }
+        
+        this.updateThrottled = false;
+      });
+    }
+
+    isMobileMenuOpen() {
+      return this.menu && !this.menu.classList.contains("hidden");
+    }
+
+    handleHeaderVisibility() {
+      if (!this.header) return;
+      
+      const currentScrollY = window.scrollY;
+      
+      // Always show header if mobile menu is open
+      if (this.isMobileMenuOpen()) {
+        this.header.style.transform = "translateY(0)";
+        this.header.style.boxShadow = "0 2px 8px var(--shadow)";
+        this.lastScrollY = currentScrollY;
+        return;
+      }
+      
+      if (currentScrollY < 10) {
+        // At top of page
+        this.header.style.transform = "translateY(0)";
+        this.header.style.boxShadow = "none";
+      } else if (currentScrollY < this.lastScrollY || Math.abs(currentScrollY - this.lastScrollY) < 5) {
+        // Scrolling up or minimal movement
+        this.header.style.transform = "translateY(0)";
+        this.header.style.boxShadow = "0 2px 8px var(--shadow)";
+        
+        // Clear any hide timeout
+        if (this.hideTimeout) {
+          clearTimeout(this.hideTimeout);
+          this.hideTimeout = null;
+        }
+      } else {
+        // Scrolling down
+        if (this.hideTimeout) clearTimeout(this.hideTimeout);
+        this.hideTimeout = setTimeout(() => {
+          if (!this.isMobileMenuOpen()) {
+            this.header.style.transform = "translateY(-120%)";
+            this.header.style.boxShadow = "none";
+          }
+        }, 150);
+      }
+      
+      this.lastScrollY = currentScrollY;
+    }
+
+    setupScrollHandling() {
+      let ticking = false;
+      
+      const handleScroll = () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            this.handleHeaderVisibility();
+            this.updateNavigation();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+      
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      // Update navigation when header becomes visible
+      if (this.button) {
+        this.button.addEventListener("click", () => {
+          setTimeout(() => this.updateNavigation(), 100);
+        });
+      }
     }
   }
-  window.addEventListener("scroll", onScroll);
+
+  // Initialize when DOM is ready
+  function initializeNavigation() {
+    if (typeof window !== 'undefined') {
+      new NavigationManager();
+    }
+  }
+
+  // Multiple initialization strategies to ensure it works
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeNavigation);
+  } else {
+    initializeNavigation();
+  }
+
+  // Fallback initialization
+  setTimeout(initializeNavigation, 100);
 </script>
 
 <style>
-  header {
-    animation-timeline: scroll();
-    animation-range: 0 650px;
+  /* Dark theme only - no theme switching */
+  :root {
+    --bg-primary: #0a0f1c;
+    --bg-secondary: rgba(59, 130, 246, 0.08);
+    --bg-tertiary: rgba(59, 130, 246, 0.12);
+    --text-primary: #3b82f6;
+    --text-secondary: rgba(255, 255, 255, 0.9);
+    --text-neutral: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(59, 130, 246, 0.2);
+    --shadow: rgba(0, 0, 0, 0.4);
   }
+
+  /* Apply theme to body globally */
+  :global(html) {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  :global(body) {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-secondary) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Header scroll/hide styling */
+  .header-scroll {
+    background-color: var(--bg-primary) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease, transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    opacity: 1;
+    transform: translateY(0);
+    will-change: transform;
+    z-index: 50;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  /* Mobile menu styling */
+  .nav-menu {
+    box-shadow: 0 20px 25px -5px var(--shadow), 0 10px 10px -5px var(--shadow);
+  }
+
+  @media (min-width: 640px) {
+    .nav-menu {
+      background-color: transparent !important;
+      border: none !important;
+      backdrop-filter: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /* Navigation items */
+  .nav-item {
+    color: var(--text-neutral);
+    transition: all 0.3s ease;
+  }
+
+  .nav-item:hover {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-secondary);
+  }
+
+  .nav-item.active {
+    color: var(--text-primary) !important;
+  }
+
+  /* Responsive design */
   @media (max-width: 640px) {
     header {
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-      padding-top: 0.75rem;
-      padding-bottom: 0.75rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-top: 1.25rem;
+      padding-bottom: 1.25rem;
     }
+    
     .nav-item {
-      padding: 0.5rem 0.75rem;
+      padding: 0.875rem 1.125rem;
+      font-size: 1rem;
+      /* Touch-friendly sizing */
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      border-radius: 0.5rem;
     }
+    
     #main-menu {
-      top: 3.5rem;
-      right: 0.75rem;
-      width: 10rem;
-      padding: 0.75rem;
+      top: calc(100% + 0.5rem);
+      right: 1rem;
+      width: 12rem;
+      padding: 1rem;
     }
+
+    /* Mobile menu button styling */
+    #menu-button {
+      color: var(--text-neutral);
+      min-height: 56px;
+      min-width: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+
+  /* Tablet optimizations */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .nav-item {
+      padding: 0.5rem 0.875rem;
+    }
+  }
+
+  /* Desktop alignment fixes */
+  @media (min-width: 640px) {
+    header .flex {
+      align-items: center;
+    }
+    
+    .nav-item {
+      white-space: nowrap;
+    }
+  }
+
+  /* Improve accessibility and mobile interaction */
+  @media (max-width: 768px) {
+    .nav-item:focus,
+    #menu-button:focus {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    header, 
+    :global(body),
+    :global(html) {
+      transition: none !important;
+    }
+  }
+
+  /* Add body padding to account for fixed header */
+  :global(body) {
+    padding-top: 80px; /* Adjust based on your header height */
   }
 </style>

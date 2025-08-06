@@ -15,6 +15,7 @@ export interface SiteContent {
   experience: ExperienceProps[];
   projects: ProjectProps[];
   contact: ContactProps;
+  chatbot: ChatbotQA[];
 }
 
 export interface HeroProps {
@@ -73,5 +74,10 @@ export interface ContactProps {
     github?: string;
     instagram?: string;
   };
+}
+
+export interface ChatbotQA {
+  question: string;
+  answer: string;
 }
 

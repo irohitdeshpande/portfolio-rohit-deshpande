@@ -10,10 +10,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.3",
     "@astrojs/check": "^0.9.4",
     "@fontsource-variable/gabarito": "^5.1.0",
     "@fontsource/be-vietnam-pro": "^5.1.0",
     "@tailwindcss/vite": "^4.1.10",
+    "ai": "^5.0.4",
     "astro": "^5.12.8",
     "emailjs-com": "^3.2.0",
     "marked": "^16.1.2",

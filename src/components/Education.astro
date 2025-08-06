@@ -8,57 +8,82 @@ interface Props {
 
 const { education } = Astro.props;
 const displayEducation = education;
+
+// Function to check if this is the current/most recent education (case-insensitive, robust)
+const isCurrentEducation = (endDate: string) => {
+  if (!endDate) return false;
+  const lower = endDate.toLowerCase();
+  return lower === "2026" || lower === "present" || lower === "current" || lower.includes("present") || lower.includes("current");
+};
 ---
 
 <Section text="Education" href="education">
-  <div class="space-y-10">
-
+  <div class="space-y-6 sm:space-y-8 lg:space-y-10">
     {displayEducation[0] && (
       <div class="group">
-        <div class={`relative p-6 sm:p-8 rounded-2xl transition-all duration-300 ease-out shadow-lg bg-gradient-to-br from-primary/10 to-white/5 border border-primary/30`}>
+        <div class={`relative p-4 sm:p-5 lg:p-8 rounded-xl sm:rounded-2xl transition-all duration-300 ease-out shadow-lg ${
+          isCurrentEducation(displayEducation[0].endDate)
+            ? 'bg-primary/10 border border-primary/30 hover:bg-primary/15 current-education-card'
+            : 'bg-gradient-to-br from-white/10 to-white/5'
+        } hover:shadow-xl`}>
           {/* Top Section: All Text Content */}
-          <div class="flex flex-col gap-4 mb-4">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              <div>
-                <h3 class="text-2xl font-bold text-white mb-2 leading-tight tracking-tight">
-                  {displayEducation[0].institution}
-                </h3>
-                <h4 class="text-lg font-medium text-primary">
-                  {displayEducation[0].degree}
-                </h4>
-              </div>
-              <div class="flex flex-row items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary/15 text-primary border border-primary/25">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                <span class="whitespace-nowrap">{displayEducation[0].startDate} — {displayEducation[0].endDate}</span>
-              </div>
-            </div>
-            {displayEducation[0].grade && (
-              <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary/20">
-                  <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                  </svg>
+          <div class="flex flex-col gap-3 sm:gap-4 mb-4">
+            <div class="flex flex-col gap-3 sm:gap-4">
+              <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+                <div class="flex-1 min-w-0">
+                  <h3 class={`text-base sm:text-lg lg:text-xl font-bold mb-1 sm:mb-2 leading-tight tracking-tight break-words ${isCurrentEducation(displayEducation[0].endDate) ? 'text-primary' : ''}`} style={isCurrentEducation(displayEducation[0].endDate) ? 'color: var(--text-primary) !important;' : 'color: var(--text-secondary) !important;'}>
+                    {displayEducation[0].institution}
+                  </h3>
+                  <h4 class="text-sm sm:text-base font-medium break-words" style="color: var(--text-neutral) !important;">
+                    {displayEducation[0].degree}
+                  </h4>
                 </div>
-                <div>
-                  <div class="text-xs text-white/50 uppercase tracking-wider font-medium">Grade</div>
-                  <div class="font-semibold text-base text-primary">
-                    {displayEducation[0].grade}
+                <div class={`flex flex-row items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium self-start shrink-0 ${
+                  isCurrentEducation(displayEducation[0].endDate) 
+                    ? 'bg-primary/20 text-primary border border-primary/30' 
+                    : 'bg-primary/15 text-primary border border-primary/25'
+                }`}>
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span class="whitespace-nowrap text-xs sm:text-sm">{displayEducation[0].startDate} — {displayEducation[0].endDate}</span>
+                </div>
+              </div>
+              {displayEducation[0].grade && (
+                <div class="flex items-center gap-2 sm:gap-3 mt-1">
+                  <div class={`w-7 h-7 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                    isCurrentEducation(displayEducation[0].endDate) 
+                      ? 'bg-primary/25' 
+                      : 'bg-primary/20'
+                  }`}>
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-[10px] sm:text-xs uppercase tracking-wider font-medium" style="color: var(--text-neutral) !important;">Grade</div>
+                    <div class={`font-semibold text-xs sm:text-sm break-words ${
+                      isCurrentEducation(displayEducation[0].endDate) 
+                        ? 'text-primary' 
+                        : ''
+                    }`} style={!isCurrentEducation(displayEducation[0].endDate) ? "color: var(--text-secondary) !important;" : ""}>
+                      {displayEducation[0].grade}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
           {displayEducation[0].image && (
             <div class="w-full">
               <img
                 class="w-full aspect-video object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                style="max-height: 350px;"
+                style="max-height: 340px;"
                 src={displayEducation[0].image}
                 alt={displayEducation[0].institution}
                 width="800"
                 height="220"
+                loading="lazy"
               />
             </div>
           )}
@@ -66,58 +91,96 @@ const displayEducation = education;
       </div>
     )}
   
-    <div class="flex flex-col md:flex-row gap-6">
-      {displayEducation.slice(1, 3).map((edu, idx) => (
-        <div class="group flex-1">
-          <div class={`relative p-5 sm:p-6 rounded-2xl transition-all duration-300 ease-out shadow-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:shadow-xl`}>
-            <div class="flex flex-col gap-3 mb-3">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                <div>
-                  <h3 class="text-xl font-bold text-white leading-tight tracking-tight">
-                    {edu.institution}
-                  </h3>
-                  <h4 class="text-base font-medium text-white/80">
-                    {edu.degree}
-                  </h4>
-                </div>
-                <div class="flex flex-row items-center gap-2 px-3 py-1 rounded-lg text-xs font-medium bg-white/10 text-white/70 border border-white/15 mt-2 sm:mt-0">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                  </svg>
-                  <span class="whitespace-nowrap">{edu.startDate} — {edu.endDate}</span>
-                </div>
-              </div>
-              {edu.grade && (
-                <div class="flex items-center gap-2 mt-1">
-                  <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-white/10">
-                    <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="text-[10px] text-white/50 uppercase tracking-wider font-medium">Grade</div>
-                    <div class="font-semibold text-sm text-white/90">
-                      {edu.grade}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      {displayEducation.slice(1, 3).map((edu, idx) => {
+        const isCurrent = isCurrentEducation(edu.endDate);
+        return (
+          <div class="group">
+            <div class={`relative p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 ease-out shadow-lg ${
+              isCurrent 
+                ? 'bg-primary/10 border border-primary/30 hover:bg-primary/15' 
+                : 'bg-white/5 hover:bg-white/10'
+            } hover:shadow-xl`}>
+              <div class="flex flex-col gap-3 mb-3">
+                <div class="flex flex-col gap-2">
+                  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                      <h3 class={`text-sm sm:text-base lg:text-lg font-bold leading-tight tracking-tight break-words ${isCurrent ? 'text-primary' : ''}`} style={isCurrent ? 'color: var(--text-primary) !important;' : 'color: var(--text-secondary) !important;'}>
+                        {edu.institution}
+                      </h3>
+                      <h4 class="text-xs sm:text-sm font-medium break-words mt-0.5" style="color: var(--text-neutral) !important;">
+                        {edu.degree}
+                      </h4>
+                    </div>
+                  <div class={`flex flex-row items-center gap-1.5 sm:gap-2 px-2 py-1 sm:px-3 rounded-lg text-xs font-medium self-start shrink-0 ${
+                      isCurrent 
+                        ? 'bg-primary/20 text-primary border border-primary/30' 
+                        : 'bg-white/10 text-white/70 border border-white/15'
+                    }`}>
+                      <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    <span class="whitespace-nowrap text-xs">{edu.startDate} — {edu.endDate}</span>
                     </div>
                   </div>
+                  {edu.grade && (
+                    <div class="flex items-center gap-1.5 sm:gap-2 mt-1">
+                        <div class={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                          isCurrent 
+                            ? 'bg-primary/20 text-primary' 
+                            : 'bg-white/10 text-white/60'
+                        }`}>
+                          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                        <div class="min-w-0">
+                          <div class="text-[10px] sm:text-xs uppercase tracking-wider font-medium" style="color: var(--text-neutral) !important;">Grade</div>
+                          <div class={`font-semibold text-xs sm:text-sm break-words ${
+                            isCurrent 
+                              ? 'text-primary' 
+                              : ''
+                          }`} style={isCurrent ? 'color: var(--text-primary) !important;' : 'color: var(--text-secondary) !important;'}>
+                            {edu.grade}
+                          </div>
+                        </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {edu.image && (
+                <div class="w-full">
+                  <img
+                    class="w-full aspect-video object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                    style="max-height: 230px;"
+                    src={edu.image}
+                    alt={edu.institution}
+                    width="400"
+                    height="120"
+                    loading="lazy"
+                  />
                 </div>
               )}
             </div>
-            {edu.image && (
-              <div class="w-full">
-                <img
-                  class="w-full aspect-video object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                  style="max-height: 200px;"
-                  src={edu.image}
-                  alt={edu.institution}
-                  width="400"
-                  height="120"
-                />
-              </div>
-            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
 </Section>
+<style>
+  /* Override global styles for current education card */
+  .current-education-card h3,
+  .current-education-card .text-primary,
+  .current-education-card [style*="color: var(--text-primary)"] {
+    color: var(--text-primary) !important;
+    text-shadow: none !important;
+  }
+  .current-education-card .font-semibold {
+    color: var(--text-primary) !important;
+  }
+  .current-education-card {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--text-primary) !important;
+  }
+</style>

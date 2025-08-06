@@ -4,6 +4,7 @@ import "@fontsource/be-vietnam-pro";
 import "@fontsource-variable/gabarito";
 import { SITE_CONFIG } from "@config";
 import Footer from "@components/Footer.astro";
+import Chatbot from "@components/Chatbot.astro";
 
 const {
   title,
@@ -26,27 +27,138 @@ const ogImgUrl = canonicalURL + socialImage;
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="author" content={author} />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
+    <!-- Enhanced SEO Meta Tags -->
+    <meta name="keywords" content="Rohit Deshpande, Software Engineer, Computer Engineering, AI ML, Data Science, Portfolio, Mumbai, K.J. Somaiya College" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#5755ff" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph Meta Tags -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImgUrl} />
+    <meta property="og:image:alt" content="Rohit Deshpande - Software Engineer Portfolio" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rohit Deshpande Portfolio" />
 
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={ogImgUrl} />
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImgUrl} />
+    <meta name="twitter:image:alt" content="Rohit Deshpande - Software Engineer Portfolio" />
+
+    <!-- Mobile Safari Specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Rohit Deshpande" />
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.openai.com" />
+    <link rel="dns-prefetch" href="https://api.groq.com" />
+
+    <!-- Performance Optimization -->
+    <meta name="format-detection" content="telephone=no" />
   </head>
-  <body class="bg-black font-sans">
+  <body class="bg-black font-sans min-h-screen flex flex-col">
     <Header siteLogo={siteLogo} navLinks={navLinks} />
-    <main class="w-full px-8">
+    <main class="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 flex-1">
       <slot />
     </main>
     <Footer author={author} socialLinks={socialLinks} />
+    <Chatbot />
+
+    <!-- Mobile-specific styles -->
+    <style>
+      /* Prevent horizontal scroll on mobile */
+      html, body {
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      
+      /* Smooth scrolling with reduced motion support */
+      @media (prefers-reduced-motion: no-preference) {
+        html {
+          scroll-behavior: smooth;
+        }
+      }
+      
+      /* Mobile tap highlight */
+      * {
+        -webkit-tap-highlight-color: rgba(87, 85, 255, 0.2);
+      }
+      
+      /* iOS Safari viewport fix */
+      @supports (-webkit-touch-callout: none) {
+        body {
+          min-height: -webkit-fill-available;
+        }
+      }
+      
+      /* Touch scroll momentum on iOS */
+      body, main {
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Prevent zoom on input focus (iOS) */
+      @media screen and (max-width: 767px) {
+        input, textarea, select {
+          font-size: 16px;
+        }
+      }
+      
+      /* Safe area handling for notched devices */
+      @supports (padding: max(0px)) {
+        .chatbot-container {
+          padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+          padding-right: max(1.25rem, env(safe-area-inset-right));
+        }
+      }
+    </style>
+
+    <!-- Critical JavaScript for mobile interactions -->
+    <script is:inline>
+      // Prevent double-tap zoom on buttons/links
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+
+      // Handle viewport height changes (mobile keyboards)
+      function setVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+      
+      setVH();
+      window.addEventListener('resize', setVH);
+      window.addEventListener('orientationchange', () => {
+        setTimeout(setVH, 100);
+      });
+
+      // Performance optimization: Preload critical resources
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          // Preload chatbot resources when idle
+          const chatbotScript = document.createElement('link');
+          chatbotScript.rel = 'prefetch';
+          chatbotScript.href = '/chat-icon.svg';
+          document.head.appendChild(chatbotScript);
+        });
+      }
+    </script>
   </body>
 </html>

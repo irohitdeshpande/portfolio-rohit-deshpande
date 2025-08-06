@@ -7,17 +7,118 @@ interface Props {
 const { text, href } = Astro.props;
 ---
 
-<section id={href} class="w-full my-8 md:my-14">
+<section 
+  id={href} 
+  class="w-full py-12 sm:py-14 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 transition-colors duration-500 ease-in-out"
+  aria-labelledby={`${href}-heading`}
+>
   <div class="max-w-screen-xl mx-auto">
-    <!-- <div class="rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 p-8 md:p-16 lg:p-20"> -->
+    <div class="w-full">
       <h2
-        class="mb-8 md:mb-12 font-serif text-4xl font-bold tracking-tighter text-white md:text-5xl lg:text-6xl"
+        id={`${href}-heading`}
+        class="mb-6 sm:mb-8 md:mb-10 lg:mb-12 font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tighter leading-tight section-heading"
       >
         {text}
       </h2>
-      <div class="w-full space-y-6 md:space-y-8">
+      <div class="w-full space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-10">
         <slot />
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* Theme-aware heading colors */
+  .section-heading {
+    color: var(--text-primary, #3b82f6);
+  }
+
+  section {
+    /* Smooth scroll padding for fixed headers */
+    scroll-margin-top: 4rem;
+    
+    /* Improve text rendering on mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h2 {
+    /* Better text wrapping on mobile */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    
+    /* Prevent orphaned words */
+    text-wrap: balance;
+    
+    /* Better line height for readability */
+    line-height: 1.1;
+  }
+  
+  /* Mobile-specific optimizations */
+  @media (max-width: 640px) {
+    section {
+      /* Reduce vertical spacing on very small screens */
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+    
+    h2 {
+      /* Tighter tracking on small screens */
+      letter-spacing: -0.02em;
+      
+      /* Prevent text from being too large on small screens */
+      max-width: 100%;
+    }
+  }
+  
+  /* Tablet optimizations */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    section {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+  
+  /* Large screen optimizations */
+  @media (min-width: 1920px) {
+    section {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+  
+  /* High DPI display optimizations */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    h2 {
+      -webkit-font-smoothing: subpixel-antialiased;
+    }
+  }
+  
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    section {
+      scroll-margin-top: 2rem;
+    }
+  }
+  
+  /* Dark mode optimizations (already dark but future-proofing) */
+  @media (prefers-color-scheme: dark) {
+    h2 {
+      color: rgb(255 255 255 / 0.95);
+    }
+  }
+  
+  /* Print styles */
+  @media print {
+    section {
+      padding: 1rem 0;
+      break-inside: avoid;
+    }
+    
+    h2 {
+      color: #000 !important;
+      font-size: 2rem !important;
+    }
+  }
+</style>
