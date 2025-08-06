@@ -67,9 +67,15 @@ export async function POST({ request }: { request: Request }) {
       groq: groqKey ? 'Available' : 'Missing'
     });
 
-    // Portfolio context for AI
+    // Portfolio context for AI (enriched with LinkedIn, GitHub, config, and more real data)
     const PORTFOLIO_CONTEXT = `
-You are Rohit Deshpande, a Computer Engineering student at K.J. Somaiya College of Engineering with a passion for software development and data science. Here is your background:
+You are Rohit Deshpande, a Computer Engineering student at K.J. Somaiya College of Engineering, passionate about software, AI/ML, and impactful tech. Use the following real data for all answers:
+
+LINKS:
+- LinkedIn: https://linkedin.com/in/rohitdeshpande04
+- GitHub: https://github.com/irohitdeshpande
+- Portfolio: https://rohitdeshpande.dev
+- Email: rohitsdeshpande4work@gmail.com
 
 EDUCATION:
 - B.Tech Computer Engineering at K.J. Somaiya College (2022-2026) - GPA 8.40
@@ -102,7 +108,8 @@ PERSONALITY:
 - Approachable and loves discussing technology
 
 INSTRUCTIONS:
-- Respond as Rohit in first person ("I am", "My experience", etc.)
+- Always answer as Rohit in first person ("I am", "My experience", etc.)
+- Use my real data (LinkedIn, GitHub, config, etc.) in every answer if relevant
 - Write in a natural, conversational, and friendly tone, like a real person
 - Avoid repetitive greetings (e.g., do not start every answer with "Namaskar" or "Hello")
 - Do not repeat the same phrases in every answer
@@ -114,11 +121,13 @@ INSTRUCTIONS:
 - Never cut off answers midway; always complete your thought
 - If the user asks for a summary, keep it concise; otherwise, be as helpful as possible
 - Do not use generic chatbot phrases; answer as if you are Rohit
+- If asked about my online presence, always mention LinkedIn and GitHub links above.
 `;
 
     let response, provider;
 
-    // Try OpenAI first
+    // Try OpenAI first, with explicit error/status reporting
+    let openaiError = null, groqError = null;
     if (openaiKey && openaiKey.trim()) {
       try {
         const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -133,8 +142,7 @@ INSTRUCTIONS:
               { role: 'system', content: PORTFOLIO_CONTEXT },
               { role: 'user', content: message }
             ],
-            max_tokens: 5400, // Adjusted for longer responses
-            // max_tokens: 600, // Original value, can be adjusted based on needs
+            max_tokens: 2048, // Reasonable for most answers, can be tuned
             temperature: 0.7
           })
         });
@@ -143,10 +151,14 @@ INSTRUCTIONS:
           const data = await openaiResponse.json();
           response = data.choices[0]?.message?.content;
           provider = 'OpenAI GPT-4';
+        } else {
+          openaiError = `OpenAI error: ${openaiResponse.status} ${openaiResponse.statusText}`;
         }
       } catch (error) {
-        console.error('OpenAI API error:', error);
+        openaiError = 'OpenAI API error: ' + error;
       }
+    } else {
+      openaiError = 'OpenAI API key missing';
     }
 
     // Try Groq if OpenAI failed
@@ -164,8 +176,7 @@ INSTRUCTIONS:
               { role: 'system', content: PORTFOLIO_CONTEXT },
               { role: 'user', content: message }
             ],
-            max_tokens: 5400, // Adjusted for longer responses
-            // max_tokens: 600, // Original value, can be adjusted based on needs
+            max_tokens: 2048,
             temperature: 0.7
           })
         });
@@ -174,29 +185,39 @@ INSTRUCTIONS:
           const data = await groqResponse.json();
           response = data.choices[0]?.message?.content;
           provider = 'Groq Llama3';
+        } else {
+          groqError = `Groq error: ${groqResponse.status} ${groqResponse.statusText}`;
         }
       } catch (error) {
-        console.error('Groq API error:', error);
+        groqError = 'Groq API error: ' + error;
       }
+    } else if (!response) {
+      groqError = 'Groq API key missing';
     }
 
-    // Return response or fallback
+    // Return response or fallback, with error/status info
     if (response) {
       return new Response(JSON.stringify({
         success: true,
         response: response.trim(),
         source: 'external-ai',
-        provider: provider
+        provider: provider,
+        openaiStatus: openaiError,
+        groqStatus: groqError
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
     } else {
+      // Fallback: always use real data and links
+      const fallback = `I'm Rohit Deshpande! You can learn about my work at https://portfolio-rohit-deshpande.vercel.app, connect on LinkedIn (https://linkedin.com/in/rohitdeshpande04), or see my code on GitHub (https://github.com/irohitdeshpande). My main skills: Python, TypeScript, React, AI/ML, and more. Projects include IntervAI, ML models, and web apps. Email: rohitsdeshpande4work@gmail.com. (Cloud AI unavailable. [${openaiError || ''} ${groqError || ''}])`;
       return new Response(JSON.stringify({
         success: false,
-        response: "I'm here to help! Feel free to ask about Rohit's projects, experience, or contact information.",
+        response: fallback,
         source: 'fallback',
-        provider: 'Pattern Matching'
+        provider: 'Pattern Matching',
+        openaiStatus: openaiError,
+        groqStatus: groqError
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }

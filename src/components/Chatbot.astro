@@ -84,27 +84,69 @@ const chatbotQA = SITE_CONTENT.chatbot;
     const { getChatbotResponse, isLLMAvailable, isExternalAIAvailable } = await import('../lib/localLLM.js');
 
     // UI Functions
-    const addMessage = (sender: string, message: string) => {
+    /**
+     * Add a message to the chat window
+     * @param {"user"|"bot"} sender
+     * @param {string} message
+     * @param {{ provider?: string, error?: string }} opts
+     */
+    const addMessage = (
+      sender: "user" | "bot",
+      message: string,
+      opts: { provider?: string; error?: string } = {}
+    ) => {
+      const provider = opts.provider;
+      const error = opts.error;
       const messageDiv = document.createElement("div");
       messageDiv.className = `flex ${sender === "user" ? "justify-end" : "justify-start"} mb-3`;
-      
+
+      // Subtle provider/source icon
+      let providerIcon = "";
+      if (provider) {
+        let icon = "";
+        let label = "";
+        if (provider === "openai" || provider === "cloud") {
+          icon = `<svg class='inline-block align-middle ml-1' width='16' height='16' viewBox='0 0 20 20' fill='none'><circle cx='10' cy='10' r='8' fill='#60a5fa' opacity='0.7'/><path d='M7 10a3 3 0 016 0' stroke='#fff' stroke-width='1.5' stroke-linecap='round'/></svg>`;
+          label = "Cloud AI";
+        } else if (provider === "groq") {
+          icon = `<svg class='inline-block align-middle ml-1' width='16' height='16' viewBox='0 0 20 20' fill='none'><rect x='4' y='4' width='12' height='12' rx='3' fill='#fb923c' opacity='0.7'/><path d='M7 13l3-6 3 6' stroke='#fff' stroke-width='1.5' stroke-linecap='round'/></svg>`;
+          label = "Groq AI";
+        } else if (provider === "local") {
+          icon = `<svg class='inline-block align-middle ml-1' width='16' height='16' viewBox='0 0 20 20' fill='none'><rect x='4' y='4' width='12' height='12' rx='3' fill='#34d399' opacity='0.7'/><path d='M7 10h6' stroke='#fff' stroke-width='1.5' stroke-linecap='round'/></svg>`;
+          label = "Local AI";
+        } else if (provider === "pattern") {
+          icon = `<svg class='inline-block align-middle ml-1' width='16' height='16' viewBox='0 0 20 20' fill='none'><circle cx='10' cy='10' r='8' fill='#a3a3a3' opacity='0.5'/><path d='M7 10h6' stroke='#fff' stroke-width='1.5' stroke-linecap='round'/></svg>`;
+          label = "Pattern Match";
+        } else {
+          icon = `<svg class='inline-block align-middle ml-1' width='16' height='16' viewBox='0 0 20 20' fill='none'><circle cx='10' cy='10' r='8' fill='#64748b' opacity='0.5'/></svg>`;
+          label = provider;
+        }
+        providerIcon = `<span class="ml-1" title="${label}">${icon}</span>`;
+      }
+
+      // Error badge (still visible, but smaller)
+      let errorBadge = "";
+      if (error) {
+        errorBadge = `<span class="ml-1 px-2 py-0.5 rounded text-xs font-semibold bg-red-600 text-white whitespace-nowrap align-middle" style="font-size:11px;">${error}</span>`;
+      }
+
       if (sender === "bot") {
         messageDiv.innerHTML = `
           <div class="flex items-start space-x-2 max-w-[85%]">
             <img src="/rohitdeshpande.jpg" alt="Rohit" class="w-8 h-8 rounded-full mt-1 flex-shrink-0">
-            <div class="bg-neutral/20 text-white px-4 py-2 rounded-lg text-sm leading-relaxed">
-              ${message}
+            <div class="bg-neutral/20 text-white px-4 py-2 rounded-lg text-sm leading-relaxed w-full">
+              <div class="break-words">${message}${providerIcon}</div>
+              <div class="mt-1 flex flex-row flex-wrap gap-1 items-center min-h-[1.5rem]">${errorBadge}</div>
             </div>
           </div>
         `;
       } else {
         messageDiv.innerHTML = `
-          <div class="bg-primary text-white px-4 py-2 rounded-lg max-w-[85%] text-sm leading-relaxed">
+          <div class="bg-primary text-white px-4 py-2 rounded-lg max-w-[85%] text-sm leading-relaxed break-words">
             ${message}
           </div>
         `;
       }
-      
       chatbotMessages.appendChild(messageDiv);
       chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     };
@@ -181,15 +223,42 @@ const chatbotQA = SITE_CONTENT.chatbot;
         // Use the centralized getChatbotResponse function
         const response = await getChatbotResponse(userInput);
         removeTypingIndicator();
-        
-        let responseMessage = response.response;
-        
-        addMessage("bot", responseMessage);
-        
+
+        // Show provider/source and error if present (handle missing fields)
+        let provider: string | null = null;
+        let error: string | null = null;
+        // Use index signature to avoid TS errors for unknown fields
+        if (typeof response === "object" && response !== null) {
+          const r: Record<string, any> = response as any;
+          provider = r.provider || r.source || null;
+          error = r.error || null;
+        }
+        let responseMessage = response && typeof response.response === "string" ? response.response : String(response);
+
+        addMessage("bot", responseMessage, { provider: provider || undefined, error: error || undefined });
+
+        // Update status bar with provider info
+        if (llmStatus && provider) {
+          let statusText = "";
+          if (provider === "openai" || provider === "cloud") {
+            statusText = "Cloud AI";
+          } else if (provider === "groq") {
+            statusText = "Groq AI";
+          } else if (provider === "local") {
+            statusText = "Local AI";
+          } else if (provider === "pattern") {
+            statusText = "Pattern Match";
+          } else {
+            statusText = provider;
+          }
+          if (error) statusText += ` (Error: ${error})`;
+          llmStatus.textContent = statusText;
+        }
       } catch (error) {
         console.error('Error getting response:', error);
         removeTypingIndicator();
-        addMessage("bot", "Sorry, I'm having trouble processing that right now! 😅 Try asking about my skills, projects, or experience instead!");
+        addMessage("bot", "Sorry, I'm having trouble processing that right now! 😅 Try asking about my skills, projects, or experience instead!", { error: "Internal error" });
+        if (llmStatus) llmStatus.textContent = "Error: Chat unavailable";
       }
     };
 
