@@ -1,5 +1,6 @@
 export { renderers } from '../../renderers.mjs';
 
+
 const prerender = false;
 async function POST({ request }) {
   try {
@@ -45,11 +46,12 @@ async function POST({ request }) {
         headers: { "Content-Type": "application/json" }
       });
     }
-    const openaiKey = "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";
-    const groqKey = "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";
-    console.log("API Keys status:", {
-      openai: openaiKey ? "Available" : "Missing",
-      groq: groqKey ? "Available" : "Missing"
+    const openaiKey = import.meta.env.OPENAI_API_KEY;
+    const groqKey = import.meta.env.GROQ_API_KEY;
+
+    console.log('API Keys status:', {
+      openai: openaiKey ? 'Available' : 'Missing',
+      groq: groqKey ? 'Available' : 'Missing'
     });
     const PORTFOLIO_CONTEXT = `
 You are Rohit Deshpande, a Computer Engineering student at K.J. Somaiya College of Engineering with a passion for software development and data science. Here is your background:
