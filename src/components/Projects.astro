@@ -14,19 +14,19 @@ const { projects } = Astro.props;
   <div class="flex flex-col gap-6 sm:gap-8 lg:gap-10">
     {projects.map(({ name, summary, image, linkPreview, linkSource, date = "", techStack = [] }, index) => (
       <div
-        class="group w-full rounded-xl sm:rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl bg-gradient-to-br from-white/10 to-white/5 fade-in-up"
+        class="group w-full rounded-xl sm:rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl fade-in-up project-card-bg"
         style={`animation-delay: ${index * 80}ms;`}
         data-fade-in-up
       >
-        <div class="p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col items-center">
-          <h3 class="text-lg sm:text-xl lg:text-2xl font-bold project-title mb-3 sm:mb-4 leading-tight text-center">{name}</h3>
-          <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+        <div class="project-card-inner">
+          <h3 class="text-lg sm:text-xl lg:text-2xl font-bold project-title mb-3 sm:mb-4 leading-tight">{name}</h3>
+          <div class="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-5 tech-badge-row">
             {techStack.map((tech, i) => (
               <span class="text-xs sm:text-sm lg:text-base tech-badge px-2 sm:px-3 py-1 rounded">{tech}</span>
             ))}
           </div>
-          <p class="text-sm sm:text-base lg:text-lg project-description mb-4 sm:mb-6 text-center leading-relaxed max-w-full sm:max-w-3xl lg:max-w-4xl px-2 sm:px-0">{summary}</p>
-          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 justify-center mb-4 sm:mb-6 w-full sm:w-auto">
+          <p class="text-sm sm:text-base lg:text-lg project-description mb-4 sm:mb-6 leading-relaxed max-w-full sm:max-w-3xl lg:max-w-4xl">{summary}</p>
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 w-full sm:w-auto project-btn-row">
             <a href={linkSource} target="_blank" class="inline-block rounded-full btn-source text-xs sm:text-sm lg:text-base font-semibold px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 shadow transition-colors text-center">Source Code</a>
             <a href={linkPreview} target="_blank" class="inline-block rounded-full btn-preview text-xs sm:text-sm lg:text-base font-semibold px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 shadow transition-colors text-center">Live Preview</a>
           </div>
@@ -64,6 +64,62 @@ const { projects } = Astro.props;
   }
 </script>
 <style>
+  /* Project card background and border for mobile, matching Education section */
+  .project-card-bg {
+    background: var(--bg-primary);
+    border: 1.5px solid var(--border-color);
+    box-shadow: 0 2px 12px var(--shadow);
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  @media (min-width: 640px) {
+    .project-card-bg {
+      background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
+      border: none;
+      box-shadow: 0 10px 25px var(--shadow);
+      padding: 0;
+      gap: 0;
+    }
+  }
+  .project-card-inner {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0;
+  }
+  @media (min-width: 640px) {
+    .project-card-inner {
+      align-items: center;
+      padding: 1.5rem 2rem 2rem 2rem;
+      gap: 1.25rem;
+    }
+  }
+  .tech-badge-row {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  @media (min-width: 640px) {
+    .tech-badge-row {
+      justify-content: center;
+    }
+  }
+  .project-btn-row {
+    width: 100%;
+    align-items: flex-start;
+  }
+  @media (min-width: 640px) {
+    .project-btn-row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+  }
   /* Fade-in-up animation for project cards */
   .fade-in-up {
     opacity: 0;
@@ -89,12 +145,32 @@ const { projects } = Astro.props;
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    margin: 0;
   }
-
+  @media (min-width: 640px) {
+    .project-title {
+      text-align: center;
+      width: auto;
+      padding: 0;
+    }
+  }
   .project-description {
     color: var(--text-secondary);
     line-height: 1.6;
-    text-align: center;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  @media (min-width: 640px) {
+    .project-description {
+      text-align: center;
+      width: auto;
+      padding: 0;
+    }
   }
 
   .tech-badge {
@@ -140,19 +216,11 @@ const { projects } = Astro.props;
   }
 
 
-  /* Mobile-specific optimizations */
+  /* Mobile-specific button and badge optimizations */
   @media (max-width: 640px) {
-    .group.w-full {
-      margin: 0 -1rem;
-      border-radius: 1rem;
-    }
-    .project-description {
-      text-align: left;
-      padding: 0 0.5rem;
-    }
     .btn-source,
     .btn-preview {
-      min-height: 44px; /* Touch-friendly button height */
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
