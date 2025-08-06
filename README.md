@@ -1,12 +1,10 @@
-git clone https://github.com/irohitdeshpande/portfolio-rohit-deshpande.git
-
 # Rohit Deshpande - Portfolio Website
 
 This repository contains the source code for the personal portfolio website of Rohit Deshpande, a Computer Engineering student at K.J. Somaiya College of Engineering. The website is designed to showcase academic achievements, technical skills, professional experience, and selected projects. It features a modern, responsive design and an integrated AI-powered chatbot that can answer questions about the portfolio content.
 
 ## Live Website
 
-The portfolio is deployed at: [https://portfolio-rohit-deshpande.vercel.app/](https://portfolio-rohit-deshpande.vercel.app/)
+The portfolio is deployed at: [https://portfolio-rohit-deshpande.vercel.app/](Link)
 
 ## Project Overview
 
