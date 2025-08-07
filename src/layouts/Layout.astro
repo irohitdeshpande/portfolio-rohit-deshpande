@@ -5,6 +5,7 @@ import "@fontsource-variable/gabarito";
 import { SITE_CONFIG } from "@config";
 import Footer from "@components/Footer.astro";
 import Chatbot from "@components/Chatbot.astro";
+import RAGAdmin from "@components/RAGAdmin.astro";
 
 const {
   title,
@@ -75,6 +76,7 @@ const ogImgUrl = canonicalURL + socialImage;
     </main>
     <Footer author={author} socialLinks={socialLinks} />
     <Chatbot />
+    <RAGAdmin />
 
     <!-- Mobile-specific styles -->
     <style>
