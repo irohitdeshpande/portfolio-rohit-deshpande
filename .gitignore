@@ -24,3 +24,26 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# Test and debug files
+test-*.js
+*-test.js
+debug.html
+emailjs-debug.html
+
+# Development documentation (keep docs/ for local reference)
+# docs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+
