@@ -1,4 +1,4 @@
-// Contact Form Handler with EmailJS and API Fallback
+// Contact Form Handler with EmailJS Browser SDK and API Fallback
 (function() {
   // Wait for EmailJS to load
   function initContactForm() {
@@ -10,12 +10,14 @@
       return;
     }
 
-    // Initialize EmailJS if available
+    // Initialize EmailJS if available (using browser SDK)
     var emailjsAvailable = false;
     if (typeof emailjs !== 'undefined') {
-      emailjs.init('3uxXkNidPunCtPyph'); // Your EmailJS public key
+      emailjs.init({
+        publicKey: '3uxXkNidPunCtPyph' // Your EmailJS public key
+      });
       emailjsAvailable = true;
-      console.log('EmailJS initialized successfully');
+      console.log('EmailJS Browser SDK initialized successfully');
     } else {
       console.warn('EmailJS not loaded, will use API fallback');
     }
@@ -48,7 +50,7 @@
         // Try EmailJS first (if available)
         if (emailjsAvailable) {
           try {
-            console.log('Attempting to send via EmailJS...');
+            console.log('Attempting to send via EmailJS Browser SDK...');
             var result = await emailjs.send(
               'service_idnjelu', // Your EmailJS service ID
               'template_z6dosgs', // Your EmailJS template ID
@@ -61,7 +63,7 @@
               }
             );
             
-            console.log('EmailJS success:', result);
+            console.log('EmailJS Browser SDK success:', result);
             success = true;
             
           } catch (emailjsError) {
