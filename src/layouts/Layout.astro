@@ -5,7 +5,6 @@ import "@fontsource-variable/gabarito";
 import { SITE_CONFIG } from "@config";
 import Footer from "@components/Footer.astro";
 import Chatbot from "@components/Chatbot.astro";
-import RAGAdmin from "@components/RAGAdmin.astro";
 
 const {
   title,
@@ -76,7 +75,6 @@ const ogImgUrl = canonicalURL + socialImage;
     </main>
     <Footer author={author} socialLinks={socialLinks} />
     <Chatbot />
-    <RAGAdmin />
 
     <!-- Mobile-specific styles -->
     <style>
@@ -125,9 +123,30 @@ const ogImgUrl = canonicalURL + socialImage;
           padding-right: max(1.25rem, env(safe-area-inset-right));
         }
       }
+
+      /* Simple fade-in animation */
+      .fade-in {
+        opacity: 0;
+        transition: opacity 0.6s ease-in-out;
+      }
+      
+      .fade-in.animate-in {
+        opacity: 1;
+      }
+
+      /* Reduced motion preferences */
+      @media (prefers-reduced-motion: reduce) {
+        .fade-in {
+          transition: none !important;
+        }
+        
+        .animate-in {
+          opacity: 1 !important;
+        }
+      }
     </style>
 
-    <!-- Critical JavaScript for mobile interactions -->
+    <!-- Simple JavaScript for mobile interactions -->
     <script is:inline>
       // Prevent double-tap zoom on buttons/links
       let lastTouchEnd = 0;
@@ -151,10 +170,24 @@ const ogImgUrl = canonicalURL + socialImage;
         setTimeout(setVH, 100);
       });
 
+      // Simple fade-in animation
+      document.addEventListener('DOMContentLoaded', () => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animate-in');
+            }
+          });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+          observer.observe(el);
+        });
+      });
+
       // Performance optimization: Preload critical resources
       if ('requestIdleCallback' in window) {
         requestIdleCallback(() => {
-          // Preload chatbot resources when idle
           const chatbotScript = document.createElement('link');
           chatbotScript.rel = 'prefetch';
           chatbotScript.href = '/chat-icon.svg';

@@ -3,15 +3,11 @@
  * This module handles local LLM communication and fallback to pattern matching
  */
 
-import { ragService } from './ragService';
-
 export interface LLMResponse {
   success: boolean;
   response: string;
-  source: 'external-ai' | 'local-llm' | 'pattern' | 'fallback' | 'rag';
+  source: 'external-ai' | 'local-llm' | 'pattern' | 'fallback';
   confidence?: number;
-  provider?: string;
-  sources?: string[];
 }
 
 export interface LLMConfig {
@@ -379,7 +375,7 @@ function findBestPatternMatch(userInput: string): LLMResponse | null {
 
 /**
  * Main function to get chatbot response
- * Priority: RAG → External AI → Local LLM → Pattern Matching → Fallback
+ * Priority: External AI → Local LLM → Pattern Matching → Fallback
  */
 export async function getChatbotResponse(userMessage: string): Promise<LLMResponse> {
   if (!userMessage.trim()) {
@@ -390,26 +386,7 @@ export async function getChatbotResponse(userMessage: string): Promise<LLMRespon
     };
   }
 
-  // Try RAG first (most accurate for documented info) - Priority #1
-  if (ragService.isAvailable()) {
-    try {
-      const ragResponse = await ragService.generateResponse(userMessage);
-      if (ragResponse.confidence > 0.7) {
-        return {
-          success: true,
-          response: ragResponse.response,
-          source: 'rag',
-          confidence: ragResponse.confidence,
-          provider: ragResponse.provider,
-          sources: ragResponse.sources,
-        };
-      }
-    } catch (error) {
-      console.log('RAG failed, trying alternatives...', error);
-    }
-  }
-
-  // Try External AI (most capable) - Priority #2
+  // Try External AI first (most capable) - Priority #1
   try {
     const externalResponse = await generateExternalAIResponse(userMessage);
     if (externalResponse.success) {
@@ -419,7 +396,7 @@ export async function getChatbotResponse(userMessage: string): Promise<LLMRespon
     console.log('External AI failed, trying alternatives...');
   }
 
-  // Try local LLM for complex queries - Priority #3
+  // Try local LLM for complex queries - Priority #2
   if (await isLLMAvailable()) {
     const llmResponse = await generateLLMResponse(userMessage);
     if (llmResponse.success) {
@@ -427,7 +404,7 @@ export async function getChatbotResponse(userMessage: string): Promise<LLMRespon
     }
   }
 
-  // Pattern matching for common queries - Priority #4
+  // Pattern matching for common queries - Priority #3
   const patternMatch = findBestPatternMatch(userMessage);
   if (patternMatch && patternMatch.confidence && patternMatch.confidence > 0.7) {
     return patternMatch;
