@@ -7,19 +7,36 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "setup-pinecone": "tsx scripts/setup-pinecone.ts",
+    "reset-pinecone": "tsx scripts/reset-pinecone.ts",
+    "populate-rag": "tsx scripts/populate-rag.ts",
+    "populate-rag-groq": "tsx scripts/populate-rag-groq.ts",
+    "populate-rag-pdf": "tsx scripts/populate-rag-pdf.ts",
+    "populate-rag-enhanced": "tsx scripts/populate-rag-enhanced.ts",
+    "test-enhanced-system": "tsx scripts/test-enhanced-system.ts",
+    "test-comprehensive-rag": "tsx scripts/test-comprehensive-rag.ts",
+    "clear-rag": "tsx scripts/clear-rag.ts",
+    "test-rag": "tsx scripts/test-rag.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.3",
     "@astrojs/check": "^0.9.4",
     "@astrojs/vercel": "^8.2.5",
+    "@emailjs/browser": "^4.4.1",
     "@fontsource-variable/gabarito": "^5.1.0",
     "@fontsource/be-vietnam-pro": "^5.1.0",
+    "@langchain/community": "^0.3.50",
+    "@langchain/core": "^0.3.67",
+    "@langchain/openai": "^0.6.4",
+    "@pinecone-database/pinecone": "^6.1.2",
     "@tailwindcss/vite": "^4.1.10",
     "ai": "^5.0.4",
     "astro": "^5.12.8",
-    "emailjs-com": "^3.2.0",
+    "groq-sdk": "^0.30.0",
+    "langchain": "^0.3.30",
     "marked": "^16.1.2",
+    "pdf-parse": "^1.1.1",
     "tailwindcss": "^4.1.10",
     "toast": "^0.5.4",
     "typescript": "^5.6.2",
@@ -27,9 +44,13 @@
   },
   "devDependencies": {
     "@types/marked": "^5.0.2",
+    "@types/node": "20.0.0",
+    "@types/pdf-parse": "^1.1.5",
+    "dotenv": "^17.2.1",
     "prettier": "^3.5.3",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.6.11"
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tsx": "^4.20.3"
   },
   "packageManager": "pnpm@10.12.1"
 }
